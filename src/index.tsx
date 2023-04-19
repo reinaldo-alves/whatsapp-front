@@ -6,8 +6,6 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App />);
 
 //Desafios Obrigatórios
-//[FEITO} 1 - Criar tela de inserir nome
-//2 - Implementar melhoria na exibição do nome do usuário
 //3 - Estudar documentação socket.io (principalmente criação de rooms)
 //4 - fazer chat individual e novos grups a partir dos seus estudos
 

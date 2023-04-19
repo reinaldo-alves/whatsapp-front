@@ -58,22 +58,46 @@
 
 .image-profile {
   width: 60px;
-  height: auto;
+  height: 60px;
   border-radius: 50%;
 }
 
 .title-message {
   font-size: 18px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .last-message {
-  color: #808080
+  color: #808080;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-options {
   width: 100%;
   height: 80px;
   background-color: #F0F2F5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.options-container {
+  display: flex;
+  gap: 20px;
+}
+
+.image-option {
+  height: 25px;
 }
 
 .chat-messages {
@@ -92,12 +116,6 @@
   padding: 5px 0;
   max-height: 100%;
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-padding-bottom: 9px;
-}
-
-.chat-messages-area span {
-  scroll-snap-align: end;
 }
 
 .chat-input-area {
@@ -141,8 +159,24 @@
   justify-content: flex-end;
 }
 
+.right::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #D9FDD3;
+}
+
 .left {
   justify-content: flex-start;
+}
+
+.left::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-top: 10px solid #FFF;
 }
 
 .center {
@@ -152,17 +186,47 @@
 .user-my-message {
   background-color: #D9FDD3;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 8px;
+  border-top-right-radius: 0;
+  max-width: 80%;
 }
 
 .user-other-message {
   background-color: #FFF;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  max-width: 80%;
 }
 
 .system-message {
   background-color: #DFDFDF;
   padding: 5px 10px;
   border-radius: 5px;
+}
+
+.message-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 20px;
+}
+
+.message-name {
+  font-size: 14px;
+  font-weight: bold;
+  grid-area: 1 / 1 / 2 / 3;
+}
+
+.message-message {
+  font-size: 16px;
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.message-hour {
+  font-size: 11px;
+  color: #808080;
+  grid-area: 2 / 2 / 3 / 3;
+  align-self: flex-end;
+  justify-self: flex-end;
 }
