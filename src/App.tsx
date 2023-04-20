@@ -1,43 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import './App.css';
 import Image from './assets/profissao-programador.jpg';
 import SendMessageIcon from './assets/send.png';
-import NewGroup from './assets/add-group.png';
-import NewChat from './assets/new-message.png';
 import socket from 'socket.io-client';
-import { IUser, IMessage } from './types/types';
+import { IUser, IMessage, IRoom } from './types/types';
+import { MessageContext } from './contexts/MessageContext';
+import { UserContext } from './contexts/UserContext';
 import EnterName from './components/EnterName/EnterName';
+import ChatItem from './components/ChatItem/ChatItem';
+import ChatOptions from './components/ChatOptions/ChatOptions';
 
 const io = socket('http://localhost:4000')
 
 function App() {
-  const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [joined, setJoined] =useState(false);
-  const [user, setUser] =useState({} as IUser);
-  const [users, setUsers] =useState([]);
+  const [rooms, setRooms] =useState([]);
   const [message, setMessage] =useState("");
-  const [messages, setMessages] =useState([] as Array<IMessage>);
+
+  const { messages, setMessages } = useContext(MessageContext);
+  const {user, name, setName, avatar, setAvatar, joined, users, setUsers} = useContext(UserContext);
 
   const messagesArea = useRef<HTMLDivElement>(null);
 
   const date = new Date()
   const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
 
-  const colors = ['red', 'blue', 'pink', 'green', 'gray', 'orange', 'brown']
-
-  function selectRandom(array:Array<any>) {
-    const index = Math.floor(Math.random() * array.length);
-    const random = array[index];
-    return random
-  }
-
   useEffect(() => {
-    io.on("users", (users, user) => {
+    io.on("users", (users) => {
       setUsers(users);
-      console.log(user);
     });
+    io.on("rooms", (rooms) => setRooms(rooms))
   }, [])
+
+  console.log(rooms)
 
   useEffect(() => {
     io.on("message", (message) => setMessages([...messages, message]))
@@ -45,15 +39,6 @@ function App() {
       messagesArea.current.scrollBy(0, window.innerHeight);
     }
   }, [messages])
-  
-  const handleJoin = () => {
-    if(name){
-      const color = selectRandom(colors)
-      io.emit("join", name, avatar, color);
-      setUser({id:'', name: name, avatar: avatar, color: color});
-      setJoined(true);
-    }
-  }
 
   const handleMessage = () => {
     if(message){
@@ -64,17 +49,9 @@ function App() {
 
   if(!joined){
     return (
-      <EnterName 
-        name={name}
-        avatar={avatar}
-        changename={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-        changeavatar={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)}
-        handle={() => handleJoin()}
-      />
+      <EnterName />
     )
   }
-
-  console.log(user)
 
   return (
     <div className="container">
@@ -82,26 +59,11 @@ function App() {
       <div className="chat-container">
         
         <div className="chat-contacts">
-          <div className="chat-options">
-            <img src={avatar} className="image-profile" alt="" />
-            <div className="options-container">
-              <img src={NewChat} className="image-option" alt="" />
-              <img src={NewGroup} className="image-option" alt="" />
-            </div>
-          </div>
-
-          <div className="chat-item">
-            <img src={Image} className="image-profile" alt="" />
-            <div className="title-chat-container">
-              <span className="title-message">Networking Profissão Programador</span>
-              <span className="last-message">
-                {!messages.length? '' : 
-                  messages[messages.length - 1].user.name? `${messages[messages.length - 1].user.name}: ${messages[messages.length - 1].message}` :
-                  messages[messages.length - 1].message
-                }
-              </span>
-            </div>
-          </div>
+          <ChatOptions />
+          <ChatItem name={'Networking Profissão Programador'} avatar={Image} messages={messages} />
+          {rooms.map((item: IRoom) => (
+            <ChatItem name={item.name} avatar={item.avatar} messages={item.messages} />
+          ))}
         </div>
       
         <div className="chat-messages">
@@ -111,7 +73,7 @@ function App() {
               <div className="title-chat-container">
                 <span className="title-message">Networking Profissão Programador</span>
                 <span className="last-message">
-                  {users.map((user: IUser, index) => (
+                  {users.map((user: IUser, index: number) => (
                     <span>{user.name}{index + 1 < users.length? ', ' : ''}</span>
                   ))} 
                 </span>
@@ -120,7 +82,7 @@ function App() {
           </div>
 
           <div className="chat-messages-area" ref={messagesArea}>
-              {messages.map((message: IMessage, index) => (
+              {messages.map((message: IMessage, index: number) => (
                 <div className={!message.user.name? 'user-container-message center' : message.user.name===name? 'user-container-message right' : 'user-container-message left'}>
                   <div
                     key={index}

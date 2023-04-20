@@ -1,15 +1,26 @@
 import './styles.css'
+import socket from 'socket.io-client';
 import Logo from '../../assets/whatsappweb.png'
+import { useContext } from 'react'
+import { UserContext } from '../../contexts/UserContext'
+import { selectRandom } from '../../utilities/functions';
 
-interface IProps {
-    name: string,
-    avatar: string,
-    changename: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    changeavatar: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    handle: () => void
-}
+const io = socket('http://localhost:4000')
 
-function EnterName(props: IProps) {
+function EnterName() {
+    const { name, setName, avatar, setAvatar, setUser, setJoined } = useContext(UserContext);
+    
+    const colors = ['red', 'blue', 'pink', 'green', 'gray', 'orange', 'brown']
+
+    const handleJoin = () => {
+        if(name){
+          const color = selectRandom(colors)
+          io.emit("join", name, avatar, color);
+          setUser({id:'', name: name, avatar: avatar, color: color});
+          setJoined(true);
+        }
+      }
+
     return(
         <div className="container">
             <div className="back-ground"></div>
@@ -17,10 +28,10 @@ function EnterName(props: IProps) {
                 <img className="login-logo" src={Logo} alt="" />
                 <span className="login-message">Bem-vindo!</span>
                 <span className="login-label">Digite seu nome</span>
-                <input className="login-input" value={props.name} onChange={props.changename} />
+                <input className="login-input" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
                 <span className="login-label">Insira o link de uma imagem para seu perfil</span>
-                <input className="login-input" value={props.avatar} onChange={props.changeavatar} />
-                <button className="login-button" onClick={props.handle}>Entrar</button>
+                <input className="login-input" value={avatar} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} />
+                <button className="login-button" onClick={() => handleJoin()}>Entrar</button>
             </div>
         </div>
     )
