@@ -13,11 +13,10 @@ import ChatOptions from './components/ChatOptions/ChatOptions';
 const io = socket('http://localhost:4000')
 
 function App() {
-  const [rooms, setRooms] =useState([]);
   const [message, setMessage] =useState("");
 
-  const { messages, setMessages } = useContext(MessageContext);
-  const {user, name, setName, avatar, setAvatar, joined, users, setUsers} = useContext(UserContext);
+  const { messages, setMessages, rooms, setRooms } = useContext(MessageContext);
+  const {user, id, joined, users, setUsers} = useContext(UserContext);
 
   const messagesArea = useRef<HTMLDivElement>(null);
 
@@ -28,10 +27,11 @@ function App() {
     io.on("users", (users) => {
       setUsers(users);
     });
-    io.on("rooms", (rooms) => setRooms(rooms))
+    io.on("rooms", (rooms) => setRooms(rooms));
   }, [])
 
-  console.log(rooms)
+  console.log(user)
+  console.log(users)
 
   useEffect(() => {
     io.on("message", (message) => setMessages([...messages, message]))
@@ -83,12 +83,12 @@ function App() {
 
           <div className="chat-messages-area" ref={messagesArea}>
               {messages.map((message: IMessage, index: number) => (
-                <div className={!message.user.name? 'user-container-message center' : message.user.name===name? 'user-container-message right' : 'user-container-message left'}>
+                <div className={!message.user.id? 'user-container-message center' : message.user.id===id? 'user-container-message right' : 'user-container-message left'}>
                   <div
                     key={index}
-                    className={!message.user.name? 'system-message' : message.user.name===name? 'user-my-message' : 'user-other-message'}
+                    className={!message.user.id? 'system-message' : message.user.id===id? 'user-my-message' : 'user-other-message'}
                   >
-                    {message.user.name? 
+                    {message.user.id? 
                       <div className='message-container'>
                         <span style={{color: message.user.color}} className='message-name'>{message.user.name}</span>
                         <span className='message-message'>{message.message}</span>

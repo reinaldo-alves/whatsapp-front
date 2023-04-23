@@ -8,15 +8,21 @@ import { selectRandom } from '../../utilities/functions';
 const io = socket('http://localhost:4000')
 
 function EnterName() {
-    const { name, setName, avatar, setAvatar, setUser, setJoined } = useContext(UserContext);
+    const { name, setName, avatar, setAvatar, setUser, setJoined, id, setId } = useContext(UserContext);
     
     const colors = ['red', 'blue', 'pink', 'green', 'gray', 'orange', 'brown']
+
+    const socket = io.connect();
+
+    socket.on("connect", () => {
+        setId(socket.id);
+    });
 
     const handleJoin = () => {
         if(name){
           const color = selectRandom(colors)
-          io.emit("join", name, avatar, color);
-          setUser({id:'', name: name, avatar: avatar, color: color});
+          io.emit("join", name, avatar, color); 
+          setUser({id: id, name: name, avatar: avatar, color: color});
           setJoined(true);
         }
       }

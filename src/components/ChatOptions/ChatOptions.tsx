@@ -10,7 +10,7 @@ import { IUser } from '../../types/types';
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
-    const { name, avatar, setJoined, users } = useContext(UserContext);
+    const { id, user, name, avatar, setJoined, users } = useContext(UserContext);
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
     const [otherUsers, setOtherUsers] = useState([] as Array<IUser>);
@@ -18,13 +18,19 @@ function ChatOptions() {
     const [roomAvatar, setRoomAvatar] = useState('');
    
     const logOut = () => {
-      io.emit("logout", name);
+      io.emit("logout", user);
       setJoined(false);
     }
 
     const handleNewGroup = () => {
       io.emit("newgroup", roomName, roomAvatar, name);
       setDropGroup(false);
+    }
+
+    function handleNewChat(receiver: IUser) {
+      console.log(receiver);
+      io.emit("newchat", receiver, user);
+      setDropChat(false);
     }
 
     return(
@@ -37,19 +43,24 @@ function ChatOptions() {
             onClick={() => {
               setDropChat(!dropChat)
               setDropGroup(false)
-              setOtherUsers(users.filter((item: IUser) => item.name !== name))
+              setOtherUsers(users.filter((item: IUser) => item.id !== id))
             }}
           />
             <Dropdown dropdown={dropChat} onClick={() => setDropChat(false)}>
               <ul>
                 <DropdownTitle>Escolha um usuário para conversar</DropdownTitle>
+                {otherUsers.length===0?
+                  <span style={{display: 'block', width: '100%', textAlign: 'center'}}>
+                    Nenhum usuário conectado
+                  </span>
+                : ''}
                 {otherUsers.map((item: IUser) => (
-                    <li>
-                      <MenuItem>
-                          <img alt="" src={item.avatar} />
-                          <span>{item.name}</span>
-                      </MenuItem>
-                    </li>
+                  <li>
+                    <MenuItem onClick={() => handleNewChat(item)}>
+                        <img alt="" src={item.avatar} />
+                        <span>{item.name}</span>
+                    </MenuItem>
+                  </li>
                 ))}
               </ul>
             </Dropdown>
