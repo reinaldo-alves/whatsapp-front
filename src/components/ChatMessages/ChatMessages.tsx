@@ -1,8 +1,11 @@
 import { useContext, useRef, useState } from 'react'
 import socket from 'socket.io-client';
-import SendMessageIcon from './assets/send.png';
+import SendMessageIcon from '../../assets/send.png';
+import NewMember from '../../assets/novo-usuario.png';
 import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
+import { ButtonsContainer, Dropdown, DropdownTitle, MenuItem, OptionsButton, Overlay } from './styles';
+import { MessageContext } from '../../contexts/MessageContext';
 
 const io = socket('http://localhost:4000')
 
@@ -11,9 +14,11 @@ interface IProps {
 }
 
 function ChatMessages(props: IProps) {
-  const { id, user } = useContext(UserContext);
+  const { id, user, otherUsers, setOtherUsers, users } = useContext(UserContext);
+  const { room } = useContext(MessageContext);
 
-  const [message, setMessage] =useState("");
+  const [message, setMessage] = useState("");
+  const [dropList, setDropList] = useState(false);
 
   const messagesArea = useRef<HTMLDivElement>(null);
 
@@ -22,25 +27,61 @@ function ChatMessages(props: IProps) {
 
   const handleMessage = () => {
     if(message){
-      io.emit("message", {user: user, message: message, hour: hourMessage})
+      io.emit("message", {user: user, message: message, hour: hourMessage}, props.room.roomname)
       setMessage("")
     }
   }
 
+  function handleNewMember(newMember: IUser) {
+    console.log(newMember);
+    io.emit("adduser", newMember, room);
+    setDropList(false);
+  }
+
   return(
-    <div className="chat-messages">
+    <>
       <div className="chat-options">
         <div className="chat-item">
           <img src={props.room.avatar} className="image-profile" alt="" />
           <div className="title-chat-container">
-            <span className="title-message">Networking Profissão Programador</span>
+            <span className="title-message">{props.room.name}</span>
             <span className="last-message">
-              {props.room.users.map((user: IUser, index: number) => (
+              {!props.room.group? '' : 
+              props.room.users.map((user: IUser, index: number) => (
                 <span>{user.name}{index + 1 < props.room.users.length? ', ' : ''}</span>
               ))} 
             </span>
           </div>
         </div>
+        <ButtonsContainer>
+          {props.room.group?
+            <>
+              <OptionsButton src={NewMember} onClick={() => {
+                setDropList(!dropList)
+                setOtherUsers(users.filter((item: IUser) => item.id !== id))
+              }} />
+              <Dropdown dropdown={dropList} onClick={() => setDropList(false)}>
+                <ul>
+                  <DropdownTitle>Adicione um usuário no grupo</DropdownTitle>
+                  {otherUsers.length===0?
+                    <span style={{display: 'block', width: '100%', textAlign: 'center'}}>
+                      Nenhum usuário conectado
+                    </span>
+                  : ''}
+                  {otherUsers.map((item: IUser) => (
+                    <li>
+                      <MenuItem onClick={() => handleNewMember(item)}>
+                          <img alt="" src={item.avatar} />
+                          <span>{item.name}</span>
+                      </MenuItem>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+              <Overlay dropdown={dropList} onClick={() => setDropList(false)}/>
+            </>
+          : <div></div>}
+        </ButtonsContainer>
       </div>
 
       <div className="chat-messages-area" ref={messagesArea}>
@@ -74,7 +115,7 @@ function ChatMessages(props: IProps) {
             <img src={SendMessageIcon} alt="" className="send-message-icon" onClick={() => handleMessage()}/>
           </div>
 
-    </div> 
+    </> 
   )
 }
 

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-export const OptionsContainer = styled.div`
+export const ButtonsContainer = styled.div`
     display: flex;
-    gap: 20px;
     position: relative;
 `;
 
@@ -15,6 +14,7 @@ export const OptionsButton = styled.img`
 export const Dropdown = styled.nav<{ dropdown: boolean }>`
     position: absolute;
     top: 40px;
+    left: -275px;
     background-color: #fff;
     opacity: ${({ dropdown }) => dropdown ? '1' : '0'};
     visibility: ${({ dropdown }) => dropdown ? 'visible' : 'hidden'};
@@ -58,43 +58,6 @@ export const DropdownTitle = styled.h3`
     margin: 0 0 10px 0;
 `;
 
-export const GroupLabel = styled.span`
-    font-size: 16px;
-    text-align: center;
-    margin: 10px 0 5px 0;
-`;
-
-export const GroupInput = styled.input`
-    width: 250px;
-    background-color: #fff;
-    height: 25px;
-    border: 1px solid;
-    outline: none;
-    border-radius: 8px;
-    box-sizing: border-box;
-    padding: 4px 10px;
-    font-size: 16px;
-    text-align: center;
-`;
-
-export const GroupButton = styled.button`
-    background-color: #25D366;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
-    border: none;
-    margin-top: 10px;
-    height: 25px;
-    width: 120px;
-    cursor: pointer;
-
-    :active {
-        color: #25D366;
-        background-color: #fff;
-    }
-`;
-
 export const MenuItem = styled.div`
     width: 100%;
     min-height: 40px;
@@ -121,5 +84,46 @@ export const MenuItem = styled.div`
 
     :hover {
         background-color: #F0F2F5;
+    }
+`;
+
+
+
+
+
+export const GroupLabel = styled.span`
+    font-size: 16px;
+    text-align: center;
+    margin: 10px 0 5px 0;
+    `;
+
+export const GroupInput = styled.input`
+    width: 250px;
+    background-color: #fff;
+    height: 25px;
+    border: 1px solid;
+    outline: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 4px 10px;
+    font-size: 16px;
+    text-align: center;
+    `;
+
+export const GroupButton = styled.button`
+    background-color: #25D366;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    margin-top: 10px;
+    height: 25px;
+    width: 120px;
+    cursor: pointer;
+
+    :active {
+        color: #25D366;
+        background-color: #fff;
     }
 `;

@@ -4,12 +4,13 @@ import { IMessage } from '../../types/types'
 interface IProps {
   name: string,
   avatar: string,
-  messages: Array<IMessage>
+  messages: Array<IMessage>,
+  onClick?: any
 }
 
 function ChatItem(props: IProps) {
     return(
-        <div className="chat-item">
+        <div className="chat-item" onClick={props.onClick}>
             <img src={props.avatar} className="image-profile" alt="" />
             <div className="title-chat-container">
               <span className="title-message">{props.name}</span>

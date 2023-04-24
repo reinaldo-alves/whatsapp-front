@@ -1,7 +1,7 @@
 export interface IUser {
     id: string,
     name: string
-    avatar: string | undefined;
+    avatar: string;
     color: string
 }
 
@@ -16,4 +16,6 @@ export interface IRoom {
     avatar: string;
     users: Array<IUser>;
     messages: Array<IMessage>;
+    group: boolean;
+    roomname: string
 }

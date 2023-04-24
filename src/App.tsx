@@ -9,19 +9,37 @@ import { UserContext } from './contexts/UserContext';
 import EnterName from './components/EnterName/EnterName';
 import ChatItem from './components/ChatItem/ChatItem';
 import ChatOptions from './components/ChatOptions/ChatOptions';
+import ChatMessages from './components/ChatMessages/ChatMessages';
+import HomePage from './components/HomePage/HomePage';
 
 const io = socket('http://localhost:4000')
 
 function App() {
   const [message, setMessage] =useState("");
+  let updatedMyRooms = [] as Array<IRoom>;
 
-  const { messages, setMessages, rooms, setRooms } = useContext(MessageContext);
-  const {user, id, joined, users, setUsers} = useContext(UserContext);
+  const { messages, setMessages, rooms, setRooms, room, setRoom, myRooms, setMyRooms } = useContext(MessageContext);
+  const {user, id, joined, setUsers} = useContext(UserContext);
 
   const messagesArea = useRef<HTMLDivElement>(null);
 
   const date = new Date()
   const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
+
+  function isInArray (array: Array<IUser>, id: string) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].id === id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function cutString (original: string, search: string) {
+    const index = original.indexOf(search);
+    let newString = original.slice(0, index) + original.slice(index + search.length);
+    return newString
+  }
 
   useEffect(() => {
     io.on("users", (users) => {
@@ -30,9 +48,6 @@ function App() {
     io.on("rooms", (rooms) => setRooms(rooms));
   }, [])
 
-  console.log(user)
-  console.log(users)
-
   useEffect(() => {
     io.on("message", (message) => setMessages([...messages, message]))
     if (messagesArea.current) {
@@ -40,18 +55,39 @@ function App() {
     }
   }, [messages])
 
-  const handleMessage = () => {
-    if(message){
-      io.emit("message", {user: user, message: message, hour: hourMessage})
-      setMessage("")
-    }
-  }
+  useEffect(() => {
+    io.on("rooms", (rooms) => setRooms(rooms))
+    rooms.map((item: IRoom, index: number) => {
+      if(!item.group) {
+        updatedMyRooms[index] = {
+          name: cutString(item.name, user.name),
+          avatar: cutString(item.avatar, user.avatar),
+          users: item.users,
+          messages: item.messages,
+          group: item.group,
+          roomname: item.roomname
+        }
+      } else {
+        updatedMyRooms[index] = {
+          name: item.name,
+          avatar: item.avatar,
+          users: item.users,
+          messages: item.messages,
+          group: item.group,
+          roomname: item.roomname
+        }
+      }
+    })
+    setMyRooms(updatedMyRooms.filter((item: IRoom) => isInArray(item.users, id) === true))
+  }, [rooms])
 
   if(!joined){
     return (
       <EnterName />
     )
   }
+
+  console.log(room);
 
   return (
     <div className="container">
@@ -61,13 +97,21 @@ function App() {
         <div className="chat-contacts">
           <ChatOptions />
           <ChatItem name={'Networking Profissão Programador'} avatar={Image} messages={messages} />
-          {rooms.map((item: IRoom) => (
-            <ChatItem name={item.name} avatar={item.avatar} messages={item.messages} />
+          {myRooms.map((item: IRoom, index: number) => (
+            <ChatItem onClick={() => {
+              setRoom(myRooms[index])
+              io.emit("joinroom", myRooms[index].roomname)
+            }} name={item.name} avatar={item.avatar} messages={item.messages} />
           ))}
         </div>
       
         <div className="chat-messages">
-          <div className="chat-options">
+          {!room.name?
+            <HomePage />
+          :
+            <ChatMessages room={room} />
+          }
+          {/* <div className="chat-options">
             <div className="chat-item">
               <img src={Image} className="image-profile" alt="" />
               <div className="title-chat-container">
@@ -110,7 +154,7 @@ function App() {
               onChange={(e) => setMessage(e.target.value)}
             />
             <img src={SendMessageIcon} alt="" className="send-message-icon" onClick={() => handleMessage()}/>
-          </div>
+          </div> */}
 
         </div>
 

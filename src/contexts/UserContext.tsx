@@ -10,9 +10,10 @@ export const UserStore = ({ children }: any) => {
     const [name, setName] =useState('');
     const [avatar, setAvatar] =useState('');
     const [joined, setJoined] =useState(false);
+    const [otherUsers, setOtherUsers] = useState([] as Array<IUser>);
 
     return (
-        <UserContext.Provider value={{id, setId, user, setUser, name, setName, avatar, setAvatar, joined, setJoined, users, setUsers}}>
+        <UserContext.Provider value={{id, setId, user, setUser, name, setName, avatar, setAvatar, joined, setJoined, users, setUsers, otherUsers, setOtherUsers}}>
             { children }
         </UserContext.Provider>
     )

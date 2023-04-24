@@ -21,8 +21,8 @@ function EnterName() {
     const handleJoin = () => {
         if(name){
           const color = selectRandom(colors)
-          io.emit("join", name, avatar, color); 
-          setUser({id: id, name: name, avatar: avatar, color: color});
+          io.emit("join", name, avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000', color); 
+          setUser({id: id, name: name, avatar: avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000', color: color});
           setJoined(true);
         }
       }

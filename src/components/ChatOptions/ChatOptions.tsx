@@ -6,14 +6,15 @@ import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
 import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem } from './styles';
 import { IUser } from '../../types/types';
+import { MessageContext } from '../../contexts/MessageContext';
 
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
-    const { id, user, name, avatar, setJoined, users } = useContext(UserContext);
+    const { id, user, name, avatar, setJoined, users, otherUsers, setOtherUsers } = useContext(UserContext);
+    const { setRoom } = useContext(MessageContext)
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
-    const [otherUsers, setOtherUsers] = useState([] as Array<IUser>);
     const [roomName, setRoomName] = useState('');
     const [roomAvatar, setRoomAvatar] = useState('');
    
@@ -24,18 +25,20 @@ function ChatOptions() {
 
     const handleNewGroup = () => {
       io.emit("newgroup", roomName, roomAvatar, name);
+      io.on("groupdata", (room) => setRoom(room))
       setDropGroup(false);
     }
 
     function handleNewChat(receiver: IUser) {
       console.log(receiver);
       io.emit("newchat", receiver, user);
+      io.on("groupdata", (selectedRoom) => setRoom(selectedRoom))
       setDropChat(false);
     }
 
     return(
       <div className="chat-options">
-        <img src={avatar} className="image-profile" alt="" />
+        <img src={avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} className="image-profile" alt="" />
         <OptionsContainer>
           <OptionsButton 
             src={NewChat}
