@@ -7,12 +7,13 @@ import { UserContext } from '../../contexts/UserContext';
 import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem } from './styles';
 import { IUser } from '../../types/types';
 import { MessageContext } from '../../contexts/MessageContext';
+import { updateMessages } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
     const { id, user, name, avatar, setJoined, users, otherUsers, setOtherUsers } = useContext(UserContext);
-    const { setRoom } = useContext(MessageContext)
+    const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
     const [roomName, setRoomName] = useState('');
@@ -25,14 +26,15 @@ function ChatOptions() {
 
     const handleNewGroup = () => {
       io.emit("newgroup", roomName, roomAvatar, name);
-      io.on("groupdata", (room) => setRoom(room))
+      //io.on("groupdata", (room) => setRoom(room))
+      setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
       setDropGroup(false);
     }
 
     function handleNewChat(receiver: IUser) {
-      console.log(receiver);
       io.emit("newchat", receiver, user);
-      io.on("groupdata", (selectedRoom) => setRoom(selectedRoom))
+      //io.on("groupdata", (selectedRoom) => setRoom(selectedRoom))
+      setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
       setDropChat(false);
     }
 

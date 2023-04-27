@@ -19,3 +19,7 @@ export interface IRoom {
     group: boolean;
     roomname: string
 }
+
+export interface IAllMessages {
+    [roomName: string]: Array<IMessage>
+}

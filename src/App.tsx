@@ -1,9 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import './App.css';
 import Image from './assets/profissao-programador.jpg';
-import SendMessageIcon from './assets/send.png';
 import socket from 'socket.io-client';
-import { IUser, IMessage, IRoom } from './types/types';
+import { IRoom } from './types/types';
 import { MessageContext } from './contexts/MessageContext';
 import { UserContext } from './contexts/UserContext';
 import EnterName from './components/EnterName/EnterName';
@@ -11,35 +10,17 @@ import ChatItem from './components/ChatItem/ChatItem';
 import ChatOptions from './components/ChatOptions/ChatOptions';
 import ChatMessages from './components/ChatMessages/ChatMessages';
 import HomePage from './components/HomePage/HomePage';
+import { cutString, isInArray, updateMessages } from './utilities/functions';
 
 const io = socket('http://localhost:4000')
 
 function App() {
-  const [message, setMessage] =useState("");
   let updatedMyRooms = [] as Array<IRoom>;
 
-  const { messages, setMessages, rooms, setRooms, room, setRoom, myRooms, setMyRooms } = useContext(MessageContext);
+  const { allMessages, setAllMessages, activeRoomMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator } = useContext(MessageContext);
   const {user, id, joined, setUsers} = useContext(UserContext);
 
   const messagesArea = useRef<HTMLDivElement>(null);
-
-  const date = new Date()
-  const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
-
-  function isInArray (array: Array<IUser>, id: string) {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i].id === id) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function cutString (original: string, search: string) {
-    const index = original.indexOf(search);
-    let newString = original.slice(0, index) + original.slice(index + search.length);
-    return newString
-  }
 
   useEffect(() => {
     io.on("users", (users) => {
@@ -49,11 +30,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    io.on("message", (message) => setMessages([...messages, message]))
+    io.on("message", (message, roomName) => setAllMessages(() => updateMessages(allMessages, message, roomName)))
     if (messagesArea.current) {
       messagesArea.current.scrollBy(0, window.innerHeight);
     }
-  }, [messages])
+  }, [allMessages])
 
   useEffect(() => {
     io.on("rooms", (rooms) => setRooms(rooms))
@@ -87,8 +68,6 @@ function App() {
     )
   }
 
-  console.log(room);
-
   return (
     <div className="container">
       <div className="back-ground"></div>
@@ -96,20 +75,22 @@ function App() {
         
         <div className="chat-contacts">
           <ChatOptions />
-          <ChatItem name={'Networking Profissão Programador'} avatar={Image} messages={messages} />
-          {myRooms.map((item: IRoom, index: number) => (
+          <ChatItem name={'Networking Profissão Programador'} avatar={Image} messages={activeRoomMessages} />
+          {myRooms.map((item: IRoom) => (
             <ChatItem onClick={() => {
-              setRoom(myRooms[index])
-              io.emit("joinroom", myRooms[index].roomname)
-            }} name={item.name} avatar={item.avatar} messages={item.messages} />
+              setActiveRoom(item);
+              io.emit("joinroom", item.roomname);
+              io.emit("getRoomMessages", item);
+              setActivator(!activator);
+            }} name={item.name} avatar={item.avatar} messages={allMessages[item.roomname] || []} />
           ))}
         </div>
       
         <div className="chat-messages">
-          {!room.name?
+          {!activeRoom.roomname?
             <HomePage />
           :
-            <ChatMessages room={room} />
+            <ChatMessages room={activeRoom} />
           }
           {/* <div className="chat-options">
             <div className="chat-item">
