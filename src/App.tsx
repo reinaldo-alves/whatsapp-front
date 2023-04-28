@@ -17,7 +17,7 @@ const io = socket('http://localhost:4000')
 function App() {
   let updatedMyRooms = [] as Array<IRoom>;
 
-  const { allMessages, setAllMessages, activeRoomMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator } = useContext(MessageContext);
+  const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator } = useContext(MessageContext);
   const {user, id, joined, setUsers} = useContext(UserContext);
 
   const messagesArea = useRef<HTMLDivElement>(null);
@@ -75,12 +75,10 @@ function App() {
         
         <div className="chat-contacts">
           <ChatOptions />
-          <ChatItem name={'Networking Profissão Programador'} avatar={Image} messages={activeRoomMessages} />
           {myRooms.map((item: IRoom) => (
             <ChatItem onClick={() => {
               setActiveRoom(item);
               io.emit("joinroom", item.roomname);
-              io.emit("getRoomMessages", item);
               setActivator(!activator);
             }} name={item.name} avatar={item.avatar} messages={allMessages[item.roomname] || []} />
           ))}

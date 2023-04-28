@@ -6,6 +6,19 @@ export const OptionsContainer = styled.div`
     position: relative;
 `;
 
+export const UserName = styled.span`
+    font-size: 20px;
+    font-weight: bold;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin-left: 15px;
+`;
+
 export const OptionsButton = styled.img`
     height: 25px;
     cursor: pointer;

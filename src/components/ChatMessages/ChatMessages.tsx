@@ -16,7 +16,7 @@ interface IProps {
 
 function ChatMessages(props: IProps) {
   const { id, user, otherUsers, setOtherUsers, users } = useContext(UserContext);
-  const { allMessages, setAllMessages, activator, setActivator } = useContext(MessageContext);
+  const { allMessages, setAllMessages, activator, setActivator, myRooms } = useContext(MessageContext);
 
   const [message, setMessage] = useState("");
   const [dropList, setDropList] = useState(false);
@@ -24,6 +24,10 @@ function ChatMessages(props: IProps) {
   const messagesArea = useRef<HTMLDivElement>(null);
 
   const renderMessages = allMessages[props.room.roomname] || []
+
+  const [groupUsers] = myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)
+
+  console.log(groupUsers);
 
   const date = new Date()
   const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
@@ -56,8 +60,8 @@ function ChatMessages(props: IProps) {
             <span className="title-message">{props.room.name}</span>
             <span className="last-message">
               {!props.room.group? '' : 
-              props.room.users.map((user: IUser, index: number) => (
-                <span>{user.name}{index + 1 < props.room.users.length? ', ' : ''}</span>
+              groupUsers.users.map((user: IUser, index: number) => (
+                <span>{user.name}{index + 1 < groupUsers.users.length? ', ' : ''}</span>
               ))} 
             </span>
           </div>

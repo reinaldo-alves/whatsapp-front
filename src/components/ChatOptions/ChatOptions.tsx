@@ -4,7 +4,7 @@ import NewGroup from '../../assets/add-group.png';
 import LogOutIcon from '../../assets/log-out.png';
 import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
-import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem } from './styles';
+import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName } from './styles';
 import { IUser } from '../../types/types';
 import { MessageContext } from '../../contexts/MessageContext';
 import { updateMessages } from '../../utilities/functions';
@@ -25,7 +25,7 @@ function ChatOptions() {
     }
 
     const handleNewGroup = () => {
-      io.emit("newgroup", roomName, roomAvatar, name);
+      io.emit("newgroup", roomName, roomAvatar, id);
       //io.on("groupdata", (room) => setRoom(room))
       setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
       setDropGroup(false);
@@ -41,6 +41,7 @@ function ChatOptions() {
     return(
       <div className="chat-options">
         <img src={avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} className="image-profile" alt="" />
+        <UserName>{name}</UserName>
         <OptionsContainer>
           <OptionsButton 
             src={NewChat}

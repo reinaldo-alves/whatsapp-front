@@ -1,12 +1,10 @@
 import { createContext, useState } from "react";
-import { IAllMessages, IMessage, IRoom } from "../types/types";
+import { IAllMessages, IRoom } from "../types/types";
 
 export const MessageContext = createContext({} as any);
 
 export const MessageStore = ({ children }: any) => {
     const [allMessages, setAllMessages] = useState({} as IAllMessages);
-    const [activeRoomMessages, setActiveRoomMessages] = useState([] as Array<IMessage>);
-
     
     const roomDefault = {
         name: '',
@@ -24,7 +22,7 @@ export const MessageStore = ({ children }: any) => {
     const [activator, setActivator] = useState(false);
 
     return (
-        <MessageContext.Provider value={{allMessages, setAllMessages, activeRoomMessages, setActiveRoomMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator}}>
+        <MessageContext.Provider value={{allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator}}>
             { children }
         </MessageContext.Provider>
     )
