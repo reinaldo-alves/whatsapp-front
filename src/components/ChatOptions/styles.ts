@@ -1,9 +1,32 @@
 import styled from 'styled-components';
 
+export const HeaderContainer = styled.div`
+  width: 100%;
+  height: 80px;
+  background-color: #F0F2F5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 10px;
+`;
+
 export const OptionsContainer = styled.div`
     display: flex;
     gap: 20px;
     position: relative;
+`;
+
+export const GroupContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+export const NoUserMessage = styled.span`
+    display: block;
+    width: 100%;
+    text-align: center;
 `;
 
 export const UserName = styled.span`
@@ -135,4 +158,11 @@ export const MenuItem = styled.div`
     :hover {
         background-color: #F0F2F5;
     }
+`;
+
+export const ImageProfile = styled.img`
+  width: 60px;
+  min-width: 60px;
+  height: 60px;
+  border-radius: 50%;
 `;

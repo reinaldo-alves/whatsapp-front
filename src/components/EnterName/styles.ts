@@ -1,4 +1,6 @@
-.login-container {
+import styled from 'styled-components';
+
+export const LoginContainer = styled.div`
     width: 95%;
     max-width: 1800px;
     height: 95%;
@@ -9,25 +11,25 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-}
+`;
 
-.login-logo {
+export const LoginLogo = styled.img`
     height: 200px;
-}
+`;
 
-.login-message {
+export const LoginMessage = styled.span`
     font-size: 32px;
     font-weight: bold;
     color: #25D366;
     margin-bottom: 50px;
-}
+`;
 
-.login-label {
+export const LoginLabel = styled.span`
     color: #25D366;
     font-size: 22px;
-}
+`;
 
-.login-input {
+export const LoginInput = styled.input`
     width: 400px;
     background-color: #fff;
     height: 45px;
@@ -38,9 +40,9 @@
     padding: 4px 10px;
     font-size: 16px;
     text-align: center;
-}
+`;
 
-.login-button {
+export const LoginButton = styled.button`
     background-color: #25D366;
     color: #fff;
     font-size: 20px;
@@ -49,9 +51,9 @@
     height: 30px;
     width: 80px;
     cursor: pointer;
-}
 
-.login-button:active {
-    color: #25D366;
-    background-color: #fff;
-}
+    :active {
+        color: #25D366;
+        background-color: #fff;
+    }
+`;

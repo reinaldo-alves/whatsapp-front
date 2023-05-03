@@ -1,5 +1,5 @@
-import './styles.css'
 import { IMessage } from '../../types/types'
+import { ChatItemContainer, ImageProfile, LastMessage, TitleChat, TitleChatContainer } from './styles'
 
 interface IProps {
   name: string,
@@ -10,18 +10,18 @@ interface IProps {
 
 function ChatItem(props: IProps) {
     return(
-        <div className="chat-item" onClick={props.onClick}>
-            <img src={props.avatar} className="image-profile" alt="" />
-            <div className="title-chat-container">
-              <span className="title-message">{props.name}</span>
-              <span className="last-message">
+        <ChatItemContainer onClick={props.onClick}>
+            <ImageProfile src={props.avatar} alt="" />
+            <TitleChatContainer>
+              <TitleChat>{props.name}</TitleChat>
+              <LastMessage>
                 {!props.messages.length? '' : 
                   props.messages[props.messages.length - 1].user.name? `${props.messages[props.messages.length - 1].user.name}: ${props.messages[props.messages.length - 1].message}` :
                   props.messages[props.messages.length - 1].message
                 }
-              </span>
-            </div>
-        </div>
+              </LastMessage>
+            </TitleChatContainer>
+        </ChatItemContainer>
     )
 }
 

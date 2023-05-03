@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
 import './App.css';
-import Image from './assets/profissao-programador.jpg';
 import socket from 'socket.io-client';
 import { IRoom } from './types/types';
 import { MessageContext } from './contexts/MessageContext';
@@ -44,7 +43,6 @@ function App() {
           name: cutString(item.name, user.name),
           avatar: cutString(item.avatar, user.avatar),
           users: item.users,
-          messages: item.messages,
           group: item.group,
           roomname: item.roomname
         }
@@ -53,7 +51,6 @@ function App() {
           name: item.name,
           avatar: item.avatar,
           users: item.users,
-          messages: item.messages,
           group: item.group,
           roomname: item.roomname
         }
@@ -61,6 +58,12 @@ function App() {
     })
     setMyRooms(updatedMyRooms.filter((item: IRoom) => isInArray(item.users, id) === true))
   }, [rooms])
+
+  useEffect(() => {
+    myRooms.map((item: IRoom) => {
+      io.emit("joinroom", item.roomname);
+    })
+  }, [myRooms])
 
   if(!joined){
     return (
@@ -90,51 +93,6 @@ function App() {
           :
             <ChatMessages room={activeRoom} />
           }
-          {/* <div className="chat-options">
-            <div className="chat-item">
-              <img src={Image} className="image-profile" alt="" />
-              <div className="title-chat-container">
-                <span className="title-message">Networking Profissão Programador</span>
-                <span className="last-message">
-                  {users.map((user: IUser, index: number) => (
-                    <span>{user.name}{index + 1 < users.length? ', ' : ''}</span>
-                  ))} 
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="chat-messages-area" ref={messagesArea}>
-              {messages.map((message: IMessage, index: number) => (
-                <div className={!message.user.id? 'user-container-message center' : message.user.id===id? 'user-container-message right' : 'user-container-message left'}>
-                  <div
-                    key={index}
-                    className={!message.user.id? 'system-message' : message.user.id===id? 'user-my-message' : 'user-other-message'}
-                  >
-                    {message.user.id? 
-                      <div className='message-container'>
-                        <span style={{color: message.user.color}} className='message-name'>{message.user.name}</span>
-                        <span className='message-message'>{message.message}</span>
-                        <span className='message-hour'>{message.hour}</span>
-                      </div>
-                    :
-                      <span>{message.message}</span>
-                    }
-                  </div>
-                </div>
-              ))}
-          </div>
-
-          <div className="chat-input-area">
-            <input
-              className="chat-input"
-              placeholder="Mensagem"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <img src={SendMessageIcon} alt="" className="send-message-icon" onClick={() => handleMessage()}/>
-          </div> */}
-
         </div>
 
       </div>

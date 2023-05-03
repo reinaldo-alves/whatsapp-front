@@ -13,10 +13,6 @@ root.render(
   </UserStore>
 );
 
-//Desafios Obrigatórios
-//3 - Estudar documentação socket.io (principalmente criação de rooms)
-//4 - fazer chat individual e novos grups a partir dos seus estudos
-
 //Desafios Opcionais
 //5 - Implementação de criação de conta e login
 //6 - Mostrar quantidade de mensagens não lidas em um chat
@@ -24,7 +20,4 @@ root.render(
 //8 - ser possível fixar uma conversa no topo
 
 //Meus Desafios
-//9 - verificação da posição da mensagem por id do usuário
-//10 - Styled Components
-//11 - Se o scroll tiver embaixo, mostra nova mensagem,
-  // se tiver em cima, mostra aviso "novas mensagens" que você clica e scrolla para baixo
+//11 - Se o scroll estiver em cima, mostra aviso "novas mensagens" que você clica e scrolla para baixo

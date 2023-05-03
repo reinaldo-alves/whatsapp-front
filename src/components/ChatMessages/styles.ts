@@ -127,3 +127,151 @@ export const GroupButton = styled.button`
         background-color: #fff;
     }
 `;
+
+export const ImageProfile = styled.img`
+  width: 60px;
+  min-width: 60px;
+  height: 60px;
+  border-radius: 50%;
+`;
+
+export const HeaderContainer = styled.div`
+  width: 100%;
+  height: 80px;
+  background-color: #F0F2F5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 10px;
+`;
+
+export const InfoChatContainer = styled.div`
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+`;
+
+export const TitleChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+`;
+
+export const TitleChat = styled.span`
+  font-size: 18px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const GroupMembers = styled.span`
+  color: #808080;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const ChatMessagesArea = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 5px 0;
+  max-height: 100%;
+  overflow-y: auto;
+`;
+
+export const ChatInputArea = styled.div`
+  width: 100%;
+  height: 70px;
+  background-color: #F0F2F5;
+  box-sizing: border-box;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  input {
+    width: 90%;
+    background-color: #fff;
+    height: 45px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 4px 10px;
+    font-size: 16px;
+  }
+
+  img {
+    width: 40px;
+    height: auto;
+    cursor: pointer;
+  }
+`;
+
+export const MessagesPosition = styled.div<{system: boolean, myMessage: boolean}>`
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  padding: 0 20px;
+  margin: 2px 0;
+  justify-content: ${({ system, myMessage }) => system ? 'center': myMessage ? 'right' : 'left'};
+
+  ::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-top: ${({ system, myMessage }) => myMessage || system ? 'none' : '10px solid #FFF'};
+  }
+  
+  ::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-right: 10px solid transparent;
+    border-top: ${({ myMessage }) => myMessage? '10px solid #D9FDD3' : 'none'};
+  }
+`;
+
+export const MessageBaloon = styled.div<{system: boolean, myMessage: boolean}>`
+  background-color: ${({ system, myMessage }) => system ? '#DFDFDF': myMessage ? '#D9FDD3' : '#FFF'};
+  padding: ${({ system }) => system ? '5px 10px': '10px'};
+  border-radius: ${({ system, myMessage }) => system ? '5px': myMessage ? '8px 0 8px 8px' : '0 8px 8px 8px'};
+  max-width: 80%;
+`;
+
+export const MessageContainer = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 20px;
+`;
+
+export const MessageName = styled.span<{color: string}>`
+  font-size: 14px;
+  font-weight: bold;
+  grid-area: 1 / 1 / 2 / 3;
+  color: ${({ color }) => color };
+`;
+
+export const MessageMessage = styled.span`
+  font-size: 16px;
+  grid-area: 2 / 1 / 3 / 2;
+  overflow: hidden;
+`;
+
+export const MessageHour = styled.span`
+  font-size: 11px;
+  color: #808080;
+  grid-area: 2 / 2 / 3 / 3;
+  align-self: flex-end;
+  justify-self: flex-end;
+`;

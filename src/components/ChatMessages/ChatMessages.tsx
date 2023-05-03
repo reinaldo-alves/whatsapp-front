@@ -4,7 +4,7 @@ import SendMessageIcon from '../../assets/send.png';
 import NewMember from '../../assets/novo-usuario.png';
 import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
-import { ButtonsContainer, Dropdown, DropdownTitle, MenuItem, OptionsButton, Overlay } from './styles';
+import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, Overlay, TitleChat, TitleChatContainer } from './styles';
 import { MessageContext } from '../../contexts/MessageContext';
 import { updateMessages } from '../../utilities/functions';
 
@@ -49,23 +49,23 @@ function ChatMessages(props: IProps) {
     if (messagesArea.current) {
       messagesArea.current.scrollBy(0, window.innerHeight);
     }
-  }, [message, allMessages, activator])
+  }, [allMessages, activator])
 
   return(
     <>
-      <div className="chat-options">
-        <div className="chat-item">
-          <img src={props.room.avatar} className="image-profile" alt="" />
-          <div className="title-chat-container">
-            <span className="title-message">{props.room.name}</span>
-            <span className="last-message">
+      <HeaderContainer>
+        <InfoChatContainer>
+          <ImageProfile src={props.room.avatar} alt="" />
+          <TitleChatContainer>
+            <TitleChat>{props.room.name}</TitleChat>
+            <GroupMembers>
               {!props.room.group? '' : 
               groupUsers.users.map((user: IUser, index: number) => (
                 <span>{user.name}{index + 1 < groupUsers.users.length? ', ' : ''}</span>
-              ))} 
-            </span>
-          </div>
-        </div>
+                ))} 
+            </GroupMembers>
+          </TitleChatContainer>
+        </InfoChatContainer>
         <ButtonsContainer>
           {props.room.group?
             <>
@@ -95,41 +95,37 @@ function ChatMessages(props: IProps) {
             </>
           : <div></div>}
         </ButtonsContainer>
-      </div>
+      </HeaderContainer>
 
-      <div className="chat-messages-area" ref={messagesArea}>
+      <ChatMessagesArea ref={messagesArea}>
           {renderMessages.map((message: IMessage, index: number) => (
-            <div className={!message.user.id? 'user-container-message center' : message.user.id===id? 'user-container-message right' : 'user-container-message left'}>
-              <div
-                key={index}
-                className={!message.user.id? 'system-message' : message.user.id===id? 'user-my-message' : 'user-other-message'}
-              >
+            <MessagesPosition system={!message.user.id} myMessage={message.user.id===id}>
+              <MessageBaloon system={!message.user.id} myMessage={message.user.id===id}>
                 {message.user.id? 
-                  <div className='message-container'>
-                    {props.room.group? <span style={{color: message.user.color}} className='message-name'>{message.user.name}</span> : ''}
-                    <span className='message-message'>{message.message}</span>
-                    <span className='message-hour'>{message.hour}</span>
-                  </div>
+                  <MessageContainer>
+                    {props.room.group? <MessageName color={message.user.color}>{message.user.name}</MessageName> : ''}
+                    <MessageMessage>{message.message}</MessageMessage>
+                    <MessageHour>{message.hour}</MessageHour>
+                  </MessageContainer>
                 :
-                  <span>{message.message}</span>
+                <span>{message.message}</span>
                 }
-              </div>
-            </div>
+              </MessageBaloon>
+            </MessagesPosition>
           ))}
-      </div> 
+      </ChatMessagesArea> 
 
-      <div className="chat-input-area">
+      <ChatInputArea>
             <input
-              className="chat-input"
               placeholder="Mensagem"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <img src={SendMessageIcon} alt="" className="send-message-icon" onClick={() => {
+            <img src={SendMessageIcon} alt="" onClick={() => {
               handleMessage()
               setActivator(!activator)
             }}/>
-          </div>
+      </ChatInputArea>
 
     </> 
   )

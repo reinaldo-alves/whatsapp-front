@@ -15,7 +15,6 @@ export interface IRoom {
     name: string;
     avatar: string;
     users: Array<IUser>;
-    messages: Array<IMessage>;
     group: boolean;
     roomname: string
 }

@@ -1,9 +1,9 @@
-import './styles.css'
 import socket from 'socket.io-client';
 import Logo from '../../assets/whatsappweb.png'
 import { useContext } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 import { selectRandom } from '../../utilities/functions';
+import { LoginButton, LoginContainer, LoginInput, LoginLabel, LoginLogo, LoginMessage } from './styles';
 
 const io = socket('http://localhost:4000')
 
@@ -30,15 +30,15 @@ function EnterName() {
     return(
         <div className="container">
             <div className="back-ground"></div>
-            <div className="login-container">
-                <img className="login-logo" src={Logo} alt="" />
-                <span className="login-message">Bem-vindo!</span>
-                <span className="login-label">Digite seu nome</span>
-                <input className="login-input" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
-                <span className="login-label">Insira o link de uma imagem para seu perfil</span>
-                <input className="login-input" value={avatar} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} />
-                <button className="login-button" onClick={() => handleJoin()}>Entrar</button>
-            </div>
+            <LoginContainer>
+                <LoginLogo src={Logo} alt="" />
+                <LoginMessage>Bem-vindo!</LoginMessage>
+                <LoginLabel>Digite seu nome</LoginLabel>
+                <LoginInput value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                <LoginLabel>Insira o link de uma imagem para seu perfil</LoginLabel>
+                <LoginInput value={avatar} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} />
+                <LoginButton onClick={() => handleJoin()}>Entrar</LoginButton>
+            </LoginContainer>
         </div>
     )
 }

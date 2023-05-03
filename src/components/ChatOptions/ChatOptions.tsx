@@ -4,7 +4,7 @@ import NewGroup from '../../assets/add-group.png';
 import LogOutIcon from '../../assets/log-out.png';
 import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
-import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName } from './styles';
+import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName, ImageProfile, HeaderContainer, GroupContainer, NoUserMessage } from './styles';
 import { IUser } from '../../types/types';
 import { MessageContext } from '../../contexts/MessageContext';
 import { updateMessages } from '../../utilities/functions';
@@ -25,22 +25,20 @@ function ChatOptions() {
     }
 
     const handleNewGroup = () => {
-      io.emit("newgroup", roomName, roomAvatar, id);
-      //io.on("groupdata", (room) => setRoom(room))
+      io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', id);
       setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
       setDropGroup(false);
     }
 
     function handleNewChat(receiver: IUser) {
       io.emit("newchat", receiver, user);
-      //io.on("groupdata", (selectedRoom) => setRoom(selectedRoom))
       setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
       setDropChat(false);
     }
 
     return(
-      <div className="chat-options">
-        <img src={avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} className="image-profile" alt="" />
+      <HeaderContainer>
+        <ImageProfile src={avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} alt="" />
         <UserName>{name}</UserName>
         <OptionsContainer>
           <OptionsButton 
@@ -55,11 +53,7 @@ function ChatOptions() {
             <Dropdown dropdown={dropChat} onClick={() => setDropChat(false)}>
               <ul>
                 <DropdownTitle>Escolha um usuário para conversar</DropdownTitle>
-                {otherUsers.length===0?
-                  <span style={{display: 'block', width: '100%', textAlign: 'center'}}>
-                    Nenhum usuário conectado
-                  </span>
-                : ''}
+                {otherUsers.length===0 ? <NoUserMessage>Nenhum usuário conectado</NoUserMessage> : ''}
                 {otherUsers.map((item: IUser) => (
                   <li>
                     <MenuItem onClick={() => handleNewChat(item)}>
@@ -77,18 +71,20 @@ function ChatOptions() {
             onClick={() => {
               setDropGroup(!dropGroup)
               setDropChat(false)
+              setRoomName('')
+              setRoomAvatar('')
             }}
           />
             <Dropdown dropdown={dropGroup}>
               <ul>
                 <DropdownTitle>Insira as informações do novo grupo</DropdownTitle>
-                <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+                <GroupContainer>
                   <GroupLabel>Nome do grupo</GroupLabel>
                   <GroupInput value={roomName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomName(e.target.value)} />
                   <GroupLabel>Imagem do grupo</GroupLabel>
                   <GroupInput value={roomAvatar} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomAvatar(e.target.value)}/>
                   <GroupButton onClick={handleNewGroup} >Criar Grupo</GroupButton>
-                </div>
+                </GroupContainer>
               </ul>
             </Dropdown>
             <Overlay dropdown={dropChat} onClick={() => setDropChat(false)}/>
@@ -98,7 +94,7 @@ function ChatOptions() {
             onClick={logOut}
           />
         </OptionsContainer>
-      </div>
+      </HeaderContainer>
     )
 }
 
