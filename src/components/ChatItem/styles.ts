@@ -4,9 +4,10 @@ export const ChatItemContainer = styled.div`
   box-sizing: border-box;
   padding: 10px;
   border-bottom: 1px solid #F0F2F5;
-  display: flex;
+  display: grid;
   align-items: center;
   cursor: pointer;
+  grid-template-columns: auto 1fr auto;
 `;
 
 export const ImageProfile = styled.img`
@@ -38,4 +39,22 @@ export const LastMessage = styled.span`
   -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const NoReadCounter = styled.div<{counter: number}>`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: red;
+  justify-self: flex-end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: ${({ counter }) => !counter ? 'hidden' : 'visible' };
+
+  span {
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+  }
 `;

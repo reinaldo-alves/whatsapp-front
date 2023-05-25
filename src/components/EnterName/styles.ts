@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-export const LoginContainer = styled.div`
+export const LoginContainer = styled.div<{active: boolean}>`
     width: 95%;
     max-width: 1800px;
     height: 95%;
     background-color: #fff;
     position: absolute;
-    display: flex;
+    display: ${({ active }) => active ? 'flex' : 'none'};
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -29,8 +29,8 @@ export const LoginLabel = styled.span`
     font-size: 22px;
 `;
 
-export const LoginInput = styled.input`
-    width: 400px;
+export const LoginInput = styled.input<{width?: string}>`
+    width: ${({ width }) => width ? width : '400px'};
     background-color: #fff;
     height: 45px;
     border: 1px solid #25D366;
@@ -42,18 +42,33 @@ export const LoginInput = styled.input`
     text-align: center;
 `;
 
-export const LoginButton = styled.button`
+export const LoginButton = styled.button<{width?: string}>`
     background-color: #25D366;
     color: #fff;
     font-size: 20px;
     border-radius: 8px;
     border: none;
     height: 30px;
-    width: 80px;
+    width: ${({ width }) => width ? width : '80px'};
     cursor: pointer;
 
     :active {
         color: #25D366;
         background-color: #fff;
+    }
+`;
+
+export const TextAddUser = styled.span`
+    margin-top: 15px;
+    font-size: 16px;
+    color: #25D366;
+
+    span {
+        text-decoration: underline;
+        
+        :hover {
+            cursor: pointer;
+            color: green;
+        }
     }
 `;

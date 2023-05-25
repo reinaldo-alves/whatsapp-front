@@ -15,7 +15,7 @@ interface IProps {
 }
 
 function ChatMessages(props: IProps) {
-  const { id, user, otherUsers, setOtherUsers, users } = useContext(UserContext);
+  const { user, otherUsers, setOtherUsers, users } = useContext(UserContext);
   const { allMessages, setAllMessages, activator, setActivator, myRooms } = useContext(MessageContext);
 
   const [message, setMessage] = useState("");
@@ -26,8 +26,6 @@ function ChatMessages(props: IProps) {
   const renderMessages = allMessages[props.room.roomname] || []
 
   const [groupUsers] = myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)
-
-  console.log(groupUsers);
 
   const date = new Date()
   const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
@@ -71,7 +69,7 @@ function ChatMessages(props: IProps) {
             <>
               <OptionsButton src={NewMember} onClick={() => {
                 setDropList(!dropList)
-                setOtherUsers(users.filter((item: IUser) => item.id !== id))
+                setOtherUsers(users.filter((item: IUser) => item.email !== user.email))
               }} />
               <Dropdown dropdown={dropList} onClick={() => setDropList(false)}>
                 <ul>
@@ -99,9 +97,9 @@ function ChatMessages(props: IProps) {
 
       <ChatMessagesArea ref={messagesArea}>
           {renderMessages.map((message: IMessage, index: number) => (
-            <MessagesPosition system={!message.user.id} myMessage={message.user.id===id}>
-              <MessageBaloon system={!message.user.id} myMessage={message.user.id===id}>
-                {message.user.id? 
+            <MessagesPosition system={!message.user.email} myMessage={message.user.email===user.email}>
+              <MessageBaloon system={!message.user.email} myMessage={message.user.email===user.email}>
+                {message.user.email? 
                   <MessageContainer>
                     {props.room.group? <MessageName color={message.user.color}>{message.user.name}</MessageName> : ''}
                     <MessageMessage>{message.message}</MessageMessage>

@@ -1,7 +1,9 @@
 export interface IUser {
-    id: string,
-    name: string
+    id: string;
+    email: string;
+    name: string;
     avatar: string;
+    password: string;
     color: string
 }
 
@@ -21,4 +23,8 @@ export interface IRoom {
 
 export interface IAllMessages {
     [roomName: string]: Array<IMessage>
+}
+
+export interface ICounter {
+    [roomName: string]: number
 }

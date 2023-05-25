@@ -14,10 +14,8 @@ root.render(
 );
 
 //Desafios Opcionais
-//5 - Implementação de criação de conta e login
-//6 - Mostrar quantidade de mensagens não lidas em um chat
-//7 - ser possível transitar entre diferentes conversas
 //8 - ser possível fixar uma conversa no topo
 
 //Meus Desafios
-//11 - Se o scroll estiver em cima, mostra aviso "novas mensagens" que você clica e scrolla para baixo
+//11 - pressionar enter para mandar mensagem
+//12 - criptografar senha 

@@ -12,7 +12,7 @@ import { updateMessages } from '../../utilities/functions';
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
-    const { id, user, name, avatar, setJoined, users, otherUsers, setOtherUsers } = useContext(UserContext);
+    const { user, setJoined, users, otherUsers, setOtherUsers } = useContext(UserContext);
     const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
@@ -25,21 +25,21 @@ function ChatOptions() {
     }
 
     const handleNewGroup = () => {
-      io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', id);
-      setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
+      io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', user.email);
+      setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
       setDropGroup(false);
     }
 
     function handleNewChat(receiver: IUser) {
       io.emit("newchat", receiver, user);
-      setAllMessages(() => updateMessages(allMessages, {user: {id:'', name:'', avatar: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
+      setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
       setDropChat(false);
     }
 
     return(
       <HeaderContainer>
-        <ImageProfile src={avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} alt="" />
-        <UserName>{name}</UserName>
+        <ImageProfile src={user.avatar? user.avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} alt="" />
+        <UserName>{user.name}</UserName>
         <OptionsContainer>
           <OptionsButton 
             src={NewChat}
@@ -47,7 +47,7 @@ function ChatOptions() {
             onClick={() => {
               setDropChat(!dropChat)
               setDropGroup(false)
-              setOtherUsers(users.filter((item: IUser) => item.id !== id))
+              setOtherUsers(users.filter((item: IUser) => item.email !== user.email))
             }}
           />
             <Dropdown dropdown={dropChat} onClick={() => setDropChat(false)}>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import './App.css';
 import socket from 'socket.io-client';
 import { IRoom } from './types/types';
@@ -9,15 +9,17 @@ import ChatItem from './components/ChatItem/ChatItem';
 import ChatOptions from './components/ChatOptions/ChatOptions';
 import ChatMessages from './components/ChatMessages/ChatMessages';
 import HomePage from './components/HomePage/HomePage';
-import { cutString, isInArray, updateMessages } from './utilities/functions';
+import { cutString, isInArray, reorderRooms, restartCounter, updateCounter, updateMessages } from './utilities/functions';
 
 const io = socket('http://localhost:4000')
 
 function App() {
   let updatedMyRooms = [] as Array<IRoom>;
 
-  const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator } = useContext(MessageContext);
-  const {user, id, joined, setUsers} = useContext(UserContext);
+  const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter } = useContext(MessageContext);
+  const {user, joined, setUsers} = useContext(UserContext);
+
+  const [counterRoomName, setCounterRoomName] = useState('');
 
   const messagesArea = useRef<HTMLDivElement>(null);
 
@@ -29,10 +31,15 @@ function App() {
   }, [])
 
   useEffect(() => {
-    io.on("message", (message, roomName) => setAllMessages(() => updateMessages(allMessages, message, roomName)))
+    io.on("message", (message, roomName) => {
+      setAllMessages(() => updateMessages(allMessages, message, roomName))
+      setCounterRoomName(roomName)
+    })
     if (messagesArea.current) {
       messagesArea.current.scrollBy(0, window.innerHeight);
     }
+    setCounter(() => updateCounter(counter, counterRoomName, activeRoom))
+    setMyRooms(reorderRooms(myRooms, counterRoomName));
   }, [allMessages])
 
   useEffect(() => {
@@ -40,8 +47,8 @@ function App() {
     rooms.map((item: IRoom, index: number) => {
       if(!item.group) {
         updatedMyRooms[index] = {
-          name: cutString(item.name, user.name),
-          avatar: cutString(item.avatar, user.avatar),
+          name: cutString(item.name, user.name || ''),
+          avatar: cutString(item.avatar, user.avatar || ''),
           users: item.users,
           group: item.group,
           roomname: item.roomname
@@ -56,7 +63,7 @@ function App() {
         }
       }
     })
-    setMyRooms(updatedMyRooms.filter((item: IRoom) => isInArray(item.users, id) === true))
+    setMyRooms(updatedMyRooms.filter((item: IRoom) => isInArray(item.users, user.email) === true))
   }, [rooms])
 
   useEffect(() => {
@@ -81,9 +88,10 @@ function App() {
           {myRooms.map((item: IRoom) => (
             <ChatItem onClick={() => {
               setActiveRoom(item);
+              setCounter(() => restartCounter(counter, item.roomname));
               io.emit("joinroom", item.roomname);
               setActivator(!activator);
-            }} name={item.name} avatar={item.avatar} messages={allMessages[item.roomname] || []} />
+            }} name={item.name} avatar={item.avatar} counter={counter[item.roomname]} messages={allMessages[item.roomname] || []} />
           ))}
         </div>
       

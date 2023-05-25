@@ -1,10 +1,11 @@
 import { IMessage } from '../../types/types'
-import { ChatItemContainer, ImageProfile, LastMessage, TitleChat, TitleChatContainer } from './styles'
+import { ChatItemContainer, ImageProfile, LastMessage, NoReadCounter, TitleChat, TitleChatContainer } from './styles'
 
 interface IProps {
   name: string,
   avatar: string,
   messages: Array<IMessage>,
+  counter: number,
   onClick?: any
 }
 
@@ -21,6 +22,7 @@ function ChatItem(props: IProps) {
                 }
               </LastMessage>
             </TitleChatContainer>
+            <NoReadCounter counter={props.counter}><span>{props.counter}</span></NoReadCounter>
         </ChatItemContainer>
     )
 }
