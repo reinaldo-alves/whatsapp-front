@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react'
 import NewChat from '../../assets/new-message.png';
 import NewGroup from '../../assets/add-group.png';
-import LogOutIcon from '../../assets/log-out.png';
 import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
 import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName, ImageProfile, HeaderContainer, GroupContainer, NoUserMessage } from './styles';
@@ -12,17 +11,12 @@ import { updateMessages } from '../../utilities/functions';
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
-    const { user, setJoined, users, otherUsers, setOtherUsers } = useContext(UserContext);
+    const { user, users, otherUsers, setOtherUsers } = useContext(UserContext);
     const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
     const [roomName, setRoomName] = useState('');
     const [roomAvatar, setRoomAvatar] = useState('');
-   
-    const logOut = () => {
-      io.emit("logout", user);
-      setJoined(false);
-    }
 
     const handleNewGroup = () => {
       io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', user.email);
@@ -88,11 +82,6 @@ function ChatOptions() {
               </ul>
             </Dropdown>
             <Overlay dropdown={dropChat} onClick={() => setDropChat(false)}/>
-          <OptionsButton
-            src={LogOutIcon}
-            alt=""
-            onClick={logOut}
-          />
         </OptionsContainer>
       </HeaderContainer>
     )

@@ -42,6 +42,13 @@ function EnterName() {
         }
       }
 
+      const handleLoginByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleLogin()
+        }
+      }
+
       const addNewUser = () => {
         if(name && email && password && password1){
           if(password === password1){
@@ -62,6 +69,13 @@ function EnterName() {
         }
       }
 
+      const addNewUserByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addNewUser()
+        }
+      }
+
     return(
         <div className="container">
             <div className="back-ground"></div>
@@ -69,9 +83,9 @@ function EnterName() {
                 <LoginLogo src={Logo} alt="" />
                 <LoginMessage>Bem-vindo!</LoginMessage>
                 <LoginLabel>Digite seu email</LoginLabel>
-                <LoginInput type='text' value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+                <LoginInput type='text' value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} onKeyUp={handleLoginByEnter} />
                 <LoginLabel>Digite sua senha</LoginLabel>
-                <LoginInput type='password' value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+                <LoginInput type='password' value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} onKeyUp={handleLoginByEnter} />
                 <LoginButton onClick={() => handleLogin()}>Entrar</LoginButton>
                 <TextAddUser>Não possui conta? <span onClick={() => {
                     setNewUser(true)
@@ -82,15 +96,15 @@ function EnterName() {
             <LoginContainer active={newUser}>
                 <LoginMessage>WhatsApp Web - Criar novo usuário</LoginMessage>
                 <LoginLabel>Digite seu nome</LoginLabel>
-                <LoginInput value={name} type='text' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                <LoginInput value={name} type='text' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} onKeyUp={addNewUserByEnter} />
                 <LoginLabel>Digite seu email</LoginLabel>
-                <LoginInput value={email} type='email' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+                <LoginInput value={email} type='email' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} onKeyUp={addNewUserByEnter} />
                 <LoginLabel>Insira o link de uma imagem para seu perfil</LoginLabel>
-                <LoginInput value={avatar} type='text' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} />
+                <LoginInput value={avatar} type='text' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} onKeyUp={addNewUserByEnter} />
                 <LoginLabel>Digite sua senha nos dois campos abaixo</LoginLabel>
                 <div style={{display: 'flex', gap: '20px'}}>
-                    <LoginInput width='220px' type='password' value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
-                    <LoginInput width='220px' type='password' value={password1} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)} />
+                    <LoginInput width='220px' type='password' value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} onKeyUp={addNewUserByEnter} />
+                    <LoginInput width='220px' type='password' value={password1} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)} onKeyUp={addNewUserByEnter} />
                 </div>
                 <div style={{marginTop: '20px', display: 'flex', gap: '40px'}}>
                     <LoginButton width='120px' onClick={() => {

@@ -5,6 +5,13 @@ export const ButtonsContainer = styled.div`
     position: relative;
 `;
 
+export const OptionsContainer = styled.div`
+    display: flex;
+    gap: 20px;
+    position: relative;
+    padding: 10px;
+`;
+
 export const OptionsButton = styled.img`
     height: 25px;
     cursor: pointer;

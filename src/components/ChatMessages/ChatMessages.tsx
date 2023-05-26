@@ -2,9 +2,10 @@ import { useContext, useRef, useState, useEffect } from 'react'
 import socket from 'socket.io-client';
 import SendMessageIcon from '../../assets/send.png';
 import NewMember from '../../assets/novo-usuario.png';
+import LogOutIcon from '../../assets/log-out.png';
 import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
-import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, Overlay, TitleChat, TitleChatContainer } from './styles';
+import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, OptionsContainer, Overlay, TitleChat, TitleChatContainer } from './styles';
 import { MessageContext } from '../../contexts/MessageContext';
 import { updateMessages } from '../../utilities/functions';
 
@@ -16,7 +17,7 @@ interface IProps {
 
 function ChatMessages(props: IProps) {
   const { user, otherUsers, setOtherUsers, users } = useContext(UserContext);
-  const { allMessages, setAllMessages, activator, setActivator, myRooms } = useContext(MessageContext);
+  const { allMessages, setAllMessages, activator, setActivator, myRooms, activeRoom, setActiveRoom } = useContext(MessageContext);
 
   const [message, setMessage] = useState("");
   const [dropList, setDropList] = useState(false);
@@ -35,6 +36,20 @@ function ChatMessages(props: IProps) {
       io.emit("message", {user: user, message: message, hour: hourMessage}, props.room)
       setMessage("")
     }
+  }
+
+  const handleMessageByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleMessage()
+      setActivator(!activator)
+    }
+  }
+
+  const quitGroup = () => {
+    io.emit("exitgroup", user, activeRoom);
+    alert(`Você saiu do grupo ${activeRoom.name}`)
+    setActiveRoom({name: '', avatar: '', users: [], messages: [], group: true, roomname: ''});
   }
 
   function handleNewMember(newMember: IUser) {
@@ -66,7 +81,7 @@ function ChatMessages(props: IProps) {
         </InfoChatContainer>
         <ButtonsContainer>
           {props.room.group?
-            <>
+            <OptionsContainer>
               <OptionsButton src={NewMember} onClick={() => {
                 setDropList(!dropList)
                 setOtherUsers(users.filter((item: IUser) => item.email !== user.email))
@@ -90,7 +105,12 @@ function ChatMessages(props: IProps) {
                 </ul>
               </Dropdown>
               <Overlay dropdown={dropList} onClick={() => setDropList(false)}/>
-            </>
+              <OptionsButton
+                src={LogOutIcon}
+                alt=""
+                onClick={quitGroup}
+              />
+            </OptionsContainer>
           : <div></div>}
         </ButtonsContainer>
       </HeaderContainer>
@@ -115,6 +135,8 @@ function ChatMessages(props: IProps) {
 
       <ChatInputArea>
             <input
+              type='text'
+              onKeyUp={handleMessageByEnter}
               placeholder="Mensagem"
               value={message}
               onChange={(e) => setMessage(e.target.value)}

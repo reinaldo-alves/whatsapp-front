@@ -15,7 +15,3 @@ root.render(
 
 //Desafios Opcionais
 //8 - ser possível fixar uma conversa no topo
-
-//Meus Desafios
-//11 - pressionar enter para mandar mensagem
-//12 - criptografar senha 
