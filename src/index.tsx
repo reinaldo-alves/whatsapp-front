@@ -13,5 +13,6 @@ root.render(
   </UserStore>
 );
 
-//Desafios Opcionais
-//8 - ser possível fixar uma conversa no topo
+//O que falta
+//- Verificar se já existe conta com aquele email antes de criar
+//- Tentar redirecionar para conversa/grupo quando ele for criado

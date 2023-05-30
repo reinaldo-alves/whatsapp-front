@@ -4,13 +4,15 @@ import NewGroup from '../../assets/add-group.png';
 import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
 import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName, ImageProfile, HeaderContainer, GroupContainer, NoUserMessage } from './styles';
-import { IUser } from '../../types/types';
+import { IRoom, IUser } from '../../types/types';
 import { MessageContext } from '../../contexts/MessageContext';
-import { updateMessages } from '../../utilities/functions';
+import { roomExists, updateMessages } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
+    const { rooms, myRooms, setActiveRoom } = useContext(MessageContext);
+  
     const { user, users, otherUsers, setOtherUsers } = useContext(UserContext);
     const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
@@ -19,15 +21,33 @@ function ChatOptions() {
     const [roomAvatar, setRoomAvatar] = useState('');
 
     const handleNewGroup = () => {
-      io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', user.email);
-      setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
-      setDropGroup(false);
+      const exists = roomExists(rooms, roomName)
+      if (!exists) {
+        io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', user.email);
+        setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
+        setDropGroup(false);
+      } else {
+        alert('Já existe um grupo com este nome. Por favor, escolha outro nome');
+        setRoomName('');
+      }
     }
 
     function handleNewChat(receiver: IUser) {
-      io.emit("newchat", receiver, user);
-      setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
-      setDropChat(false);
+      const exists1 = roomExists(rooms, user.id.concat(receiver.id));
+      const exists2 = roomExists(rooms, receiver.id.concat(user.id));
+      if(!exists1 && !exists2) {
+        io.emit("newchat", receiver, user);
+        setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
+        setDropChat(false);
+      } else if (exists1){
+        alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
+        setActiveRoom(myRooms.find((item: IRoom) => item.roomname === user.id.concat(receiver.id)))
+        setDropChat(false);
+      } else {
+        alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
+        setActiveRoom(myRooms.find((item: IRoom) => item.roomname === receiver.id.concat(user.id)))
+        setDropChat(false);
+      }
     }
 
     return(

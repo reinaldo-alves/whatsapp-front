@@ -1,17 +1,19 @@
 import { IMessage } from '../../types/types'
-import { ChatItemContainer, ImageProfile, LastMessage, NoReadCounter, TitleChat, TitleChatContainer } from './styles'
+import PinIcon from '../../assets/fixado.png'
+import { ChatItemContainer, FixedIcon, ImageProfile, LastMessage, NoReadCounter, TitleChat, TitleChatContainer } from './styles'
 
 interface IProps {
   name: string,
   avatar: string,
   messages: Array<IMessage>,
   counter: number,
+  fixed: boolean,
   onClick?: any
 }
 
 function ChatItem(props: IProps) {
     return(
-        <ChatItemContainer onClick={props.onClick}>
+        <ChatItemContainer fixed={props.fixed} counter={props.counter} onClick={props.onClick}>
             <ImageProfile src={props.avatar} alt="" />
             <TitleChatContainer>
               <TitleChat>{props.name}</TitleChat>
@@ -22,6 +24,7 @@ function ChatItem(props: IProps) {
                 }
               </LastMessage>
             </TitleChatContainer>
+            <FixedIcon fixed={props.fixed} src={PinIcon} alt='' />
             <NoReadCounter counter={props.counter}><span>{props.counter}</span></NoReadCounter>
         </ChatItemContainer>
     )

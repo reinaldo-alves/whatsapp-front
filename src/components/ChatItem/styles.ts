@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-export const ChatItemContainer = styled.div`
+export const ChatItemContainer = styled.div<{fixed: boolean, counter: number}>`
   box-sizing: border-box;
   padding: 10px;
   border-bottom: 1px solid #F0F2F5;
   display: grid;
   align-items: center;
   cursor: pointer;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr ${({ fixed }) => fixed ? 'auto' : '0'} ${({ counter }) => counter ? 'auto' : '0'};
 `;
 
 export const ImageProfile = styled.img`
@@ -57,4 +57,12 @@ export const NoReadCounter = styled.div<{counter: number}>`
     font-weight: bold;
     color: #fff;
   }
+`;
+
+export const FixedIcon = styled.img<{fixed: boolean}>`
+  display: ${({ fixed }) => fixed ? 'flex' : 'none' };
+  width: 20px;
+  height: 20px;
+  align-self: center;
+  margin-right: ${({ fixed }) => fixed ? '5px' : '0' };
 `;

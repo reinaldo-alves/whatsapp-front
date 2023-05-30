@@ -15,6 +15,15 @@ export function isInArray (array: Array<IUser>, email: string) {
     return false;
 }
 
+export function roomExists (array: Array<IRoom>, roomname: string) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i].roomname === roomname) {
+        return true;
+        }
+    }
+    return false;
+}
+
 export function cutString (original: string, search: string) {
     const index = original.indexOf(search);
     let newString = original.slice(0, index) + original.slice(index + search.length);

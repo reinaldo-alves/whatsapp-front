@@ -11,19 +11,20 @@ export const MessageStore = ({ children }: any) => {
         name: '',
         avatar: '',
         users: [],
-        messages: [],
         group: true,
         roomname: ''
     }
     
-    const [rooms, setRooms] =useState([] as Array<IRoom>);
-    const [activeRoom, setActiveRoom] =useState(roomDefault as IRoom);
+    const [rooms, setRooms] = useState([] as Array<IRoom>);
+    const [activeRoom, setActiveRoom] = useState(roomDefault as IRoom);
     const [myRooms, setMyRooms] = useState([] as Array<IRoom>)
 
     const [activator, setActivator] = useState(false);
 
+    const [fixed, setFixed] = useState(roomDefault as IRoom);
+
     return (
-        <MessageContext.Provider value={{allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter}}>
+        <MessageContext.Provider value={{allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter, fixed, setFixed}}>
             { children }
         </MessageContext.Provider>
     )

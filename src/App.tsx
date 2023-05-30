@@ -16,7 +16,7 @@ const io = socket('http://localhost:4000')
 function App() {
   let updatedMyRooms = [] as Array<IRoom>;
 
-  const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter } = useContext(MessageContext);
+  const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter, fixed } = useContext(MessageContext);
   const {user, joined, setUsers} = useContext(UserContext);
 
   const [counterRoomName, setCounterRoomName] = useState('');
@@ -24,9 +24,7 @@ function App() {
   const messagesArea = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    io.on("users", (users) => {
-      setUsers(users);
-    });
+    io.on("users", (users) => setUsers(users));
     io.on("rooms", (rooms) => setRooms(rooms));
   }, [])
 
@@ -44,7 +42,7 @@ function App() {
 
   useEffect(() => {
     io.on("rooms", (rooms) => setRooms(rooms))
-    rooms.map((item: IRoom, index: number) => {
+    rooms.forEach((item: IRoom, index: number) => {
       if(!item.group) {
         updatedMyRooms[index] = {
           name: cutString(item.name, user.name || ''),
@@ -64,10 +62,10 @@ function App() {
       }
     })
     setMyRooms(updatedMyRooms.filter((item: IRoom) => isInArray(item.users, user.email) === true))
-  }, [rooms])
+  }, [rooms, joined])
 
   useEffect(() => {
-    myRooms.map((item: IRoom) => {
+    myRooms.forEach((item: IRoom) => {
       io.emit("joinroom", item.roomname);
     })
   }, [myRooms])
@@ -85,13 +83,21 @@ function App() {
         
         <div className="chat-contacts">
           <ChatOptions />
-          {myRooms.map((item: IRoom) => (
+          {fixed.roomname? 
+            <ChatItem onClick={() => {
+              setActiveRoom(fixed);
+              setCounter(() => restartCounter(counter, fixed.roomname));
+              io.emit("joinroom", fixed.roomname);
+              setActivator(!activator);
+            }} name={fixed.name} avatar={fixed.avatar} counter={counter[fixed.roomname]} fixed={true} messages={allMessages[fixed.roomname] || []} /> 
+          : ''}
+          {myRooms.filter((el: IRoom) => el.roomname !== fixed.roomname).map((item: IRoom) => (
             <ChatItem onClick={() => {
               setActiveRoom(item);
               setCounter(() => restartCounter(counter, item.roomname));
               io.emit("joinroom", item.roomname);
               setActivator(!activator);
-            }} name={item.name} avatar={item.avatar} counter={counter[item.roomname]} messages={allMessages[item.roomname] || []} />
+            }} name={item.name} avatar={item.avatar} counter={counter[item.roomname]} fixed={false} messages={allMessages[item.roomname] || []} />
           ))}
         </div>
       
