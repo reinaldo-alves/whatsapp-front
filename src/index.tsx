@@ -14,5 +14,8 @@ root.render(
 );
 
 //O que falta
-//- Verificar se já existe conta com aquele email antes de criar
 //- Tentar redirecionar para conversa/grupo quando ele for criado
+//- Criar grupo com enter
+//- Adicionar propriedade 'online' no IUser
+//- Colocar nas listas de criar chat e adicionar em grupo avisos se os usuários estão online ou não e só permitir interação com os online
+//- Mostrar alert quando abrir um chat com um usuário que não está online

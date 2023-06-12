@@ -8,7 +8,7 @@ import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
 import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, OptionsContainer, Overlay, TitleChat, TitleChatContainer } from './styles';
 import { MessageContext } from '../../contexts/MessageContext';
-import { updateMessages } from '../../utilities/functions';
+import { hourMessage, updateMessages } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
@@ -28,9 +28,6 @@ function ChatMessages(props: IProps) {
   const renderMessages = allMessages[props.room.roomname] || []
 
   const [groupUsers] = myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)
-
-  const date = new Date()
-  const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
 
   const handleMessage = () => {
     if(message){

@@ -9,7 +9,7 @@ import ChatItem from './components/ChatItem/ChatItem';
 import ChatOptions from './components/ChatOptions/ChatOptions';
 import ChatMessages from './components/ChatMessages/ChatMessages';
 import HomePage from './components/HomePage/HomePage';
-import { cutString, isInArray, reorderRooms, restartCounter, updateCounter, updateMessages } from './utilities/functions';
+import { cutString, hourMessage, isInArray, reorderRooms, restartCounter, updateCounter, updateMessages } from './utilities/functions';
 
 const io = socket('http://localhost:4000')
 
@@ -17,7 +17,7 @@ function App() {
   let updatedMyRooms = [] as Array<IRoom>;
 
   const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter, fixed } = useContext(MessageContext);
-  const {user, joined, setUsers} = useContext(UserContext);
+  const {user, joined, users, setUsers} = useContext(UserContext);
 
   const [counterRoomName, setCounterRoomName] = useState('');
 
@@ -27,6 +27,14 @@ function App() {
     io.on("users", (users) => setUsers(users));
     io.on("rooms", (rooms) => setRooms(rooms));
   }, [])
+  
+  useEffect(() => {
+    io.on("messageAlert", (user, on_off) => {
+      if(joined) {
+          alert(`${user.name} está ${on_off ? 'online' : 'offline'}`)
+      }
+    });
+  }, [users])
 
   useEffect(() => {
     io.on("message", (message, roomName) => {

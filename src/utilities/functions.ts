@@ -1,5 +1,8 @@
 import { IAllMessages, ICounter, IMessage, IRoom, IUser } from "../types/types";
 
+const date = new Date()
+export const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
+
 export function selectRandom(array:Array<any>) {
     const index = Math.floor(Math.random() * array.length);
     const random = array[index];
@@ -52,7 +55,9 @@ export const updateCounter = (previous: ICounter, roomName: string, active: IRoo
 export const restartCounter = (previous: ICounter, roomName: string) => {return {...previous, [roomName]: 0}}
 
 export const searchUserbyEmail = (email: string, array: Array<IUser>) => {
-    return array.find(item => item.email === email)
+    const result = array.find(item => item.email === email)
+    if (!result) return {id: '', email: '', name: '', avatar: '', password: '', color: ''}
+    return result
 }
 
 export const reorderRooms = (rooms: Array<IRoom>, roomname: string) => {

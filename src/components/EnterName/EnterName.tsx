@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 import { searchUserbyEmail, selectRandom } from '../../utilities/functions';
 import { LoginButton, LoginContainer, LoginInput, LoginLabel, LoginLogo, LoginMessage, TextAddUser } from './styles';
+import { isInArray } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
@@ -29,27 +30,33 @@ function EnterName() {
     });
 
     const handleLogin = () => {
-        const loggedUser = searchUserbyEmail(email, users)
-        if(email && password){
-          if (errorMessage === 'logged') {
-            setUser(loggedUser);
-            setJoined(true);
-          } else {
-            alert(errorMessage);
-          }
+      const loggedUser = searchUserbyEmail(email, users)
+      if(email && password){
+        if (errorMessage === 'logged') {
+          setUser(loggedUser);
+          setJoined(true);
         } else {
-            alert('Digite o email e a senha corretamente');
+          alert(errorMessage);
         }
+      } else {
+          alert('Digite o email e a senha corretamente');
       }
+    }
 
-      const handleLoginByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleLogin()
-        }
+    const handleLoginByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleLogin()
       }
+    }
 
-      const addNewUser = () => {
+    const addNewUser = () => {
+      if(isInArray(users, email)) {
+        alert('Já existe um usuário com este email');
+        setEmail('');
+        setPassword('');
+        setPassword1('');
+      } else {
         if(name && email && password && password1){
           if(password === password1){
             const color = selectRandom(colors);
@@ -68,13 +75,14 @@ function EnterName() {
             alert('Preencha todos os dados corretamente')
         }
       }
+    }
 
-      const addNewUserByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          addNewUser()
-        }
+    const addNewUserByEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addNewUser()
       }
+    }
 
     return(
         <div className="container">
