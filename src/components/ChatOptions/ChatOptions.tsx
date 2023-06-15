@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import NewChat from '../../assets/new-message.png';
 import NewGroup from '../../assets/add-group.png';
 import socket from 'socket.io-client';
@@ -11,8 +11,7 @@ import { roomExists, updateMessages } from '../../utilities/functions';
 const io = socket('http://localhost:4000')
 
 function ChatOptions() {
-    const { rooms, myRooms, setActiveRoom } = useContext(MessageContext);
-  
+    const { rooms, myRooms, setActiveRoom, setNewRoom } = useContext(MessageContext);
     const { user, users, otherUsers, setOtherUsers } = useContext(UserContext);
     const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
@@ -20,11 +19,14 @@ function ChatOptions() {
     const [roomName, setRoomName] = useState('');
     const [roomAvatar, setRoomAvatar] = useState('');
 
+    const groupInputRef = useRef<HTMLInputElement>(null);
+
     const handleNewGroup = () => {
       const exists = roomExists(rooms, roomName)
       if (!exists) {
         io.emit("newgroup", roomName, roomAvatar? roomAvatar : 'https://www.shareicon.net/data/512x512/2016/06/30/788858_group_512x512.png', user.email);
-        setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
+        setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:'', online: true}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
+        setNewRoom(true);
         setDropGroup(false);
       } else {
         alert('Já existe um grupo com este nome. Por favor, escolha outro nome');
@@ -33,22 +35,29 @@ function ChatOptions() {
     }
 
     function handleNewChat(receiver: IUser) {
-      const exists1 = roomExists(rooms, user.id.concat(receiver.id));
-      const exists2 = roomExists(rooms, receiver.id.concat(user.id));
-      if(!exists1 && !exists2) {
-        io.emit("newchat", receiver, user);
-        setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:''}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
-        setDropChat(false);
-      } else if (exists1){
-        alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
-        setActiveRoom(myRooms.find((item: IRoom) => item.roomname === user.id.concat(receiver.id)))
-        setDropChat(false);
+      const exists1 = roomExists(rooms, user.email.concat(receiver.email));
+      const exists2 = roomExists(rooms, receiver.email.concat(user.email));
+      if (receiver.online) {
+        if(!exists1 && !exists2) {
+          io.emit("newchat", receiver, user);
+          setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:'', online: true}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
+          setNewRoom(true);
+          setDropChat(false);
+        } else {
+          alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
+          setActiveRoom(myRooms.find((item: IRoom) => item.roomname === receiver.email.concat(user.email) || item.roomname === user.email.concat(receiver.email)))
+          setDropChat(false);
+        }
       } else {
-        alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
-        setActiveRoom(myRooms.find((item: IRoom) => item.roomname === receiver.id.concat(user.id)))
-        setDropChat(false);
+        alert(`${receiver.name} está offline. Tente novamente mais tarde`)
       }
     }
+
+    useEffect(() => {
+      if (dropGroup && groupInputRef.current) {
+        groupInputRef.current.focus();
+      }
+    }, [dropGroup, groupInputRef]);
 
     return(
       <HeaderContainer>
@@ -70,9 +79,9 @@ function ChatOptions() {
                 {otherUsers.length===0 ? <NoUserMessage>Nenhum usuário conectado</NoUserMessage> : ''}
                 {otherUsers.map((item: IUser) => (
                   <li>
-                    <MenuItem onClick={() => handleNewChat(item)}>
+                    <MenuItem onClick={() => handleNewChat(item)} online={item.online}>
                         <img alt="" src={item.avatar} />
-                        <span>{item.name}</span>
+                        <span>{item.online? item.name : `${item.name} (offline)`}</span>
                     </MenuItem>
                   </li>
                 ))}
@@ -87,6 +96,7 @@ function ChatOptions() {
               setDropChat(false)
               setRoomName('')
               setRoomAvatar('')
+              if (groupInputRef.current) {groupInputRef.current.focus()}
             }}
           />
             <Dropdown dropdown={dropGroup}>
@@ -94,9 +104,18 @@ function ChatOptions() {
                 <DropdownTitle>Insira as informações do novo grupo</DropdownTitle>
                 <GroupContainer>
                   <GroupLabel>Nome do grupo</GroupLabel>
-                  <GroupInput value={roomName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomName(e.target.value)} />
+                  <GroupInput
+                    ref={groupInputRef}
+                    value={roomName}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomName(e.target.value)}
+                    onKeyUp={(e) => {if (e.key === 'Enter') {handleNewGroup()}}}
+                  />
                   <GroupLabel>Imagem do grupo</GroupLabel>
-                  <GroupInput value={roomAvatar} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomAvatar(e.target.value)}/>
+                  <GroupInput
+                    value={roomAvatar}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomAvatar(e.target.value)}
+                    onKeyUp={(e) => {if (e.key === 'Enter') {handleNewGroup()}}}
+                  />
                   <GroupButton onClick={handleNewGroup} >Criar Grupo</GroupButton>
                 </GroupContainer>
               </ul>

@@ -1,7 +1,10 @@
 import { IAllMessages, ICounter, IMessage, IRoom, IUser } from "../types/types";
 
-const date = new Date()
-export const hourMessage = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
+export function hourMessage() {
+    const date = new Date()
+    const currentHour = date.toLocaleTimeString('pt-BR', {timeStyle: 'short'});
+    return currentHour
+}
 
 export function selectRandom(array:Array<any>) {
     const index = Math.floor(Math.random() * array.length);

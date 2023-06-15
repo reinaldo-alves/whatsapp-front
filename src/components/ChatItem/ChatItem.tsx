@@ -8,12 +8,13 @@ interface IProps {
   messages: Array<IMessage>,
   counter: number,
   fixed: boolean,
+  active: boolean,
   onClick?: any
 }
 
 function ChatItem(props: IProps) {
     return(
-        <ChatItemContainer fixed={props.fixed} counter={props.counter} onClick={props.onClick}>
+        <ChatItemContainer fixed={props.fixed} counter={props.counter} onClick={props.onClick} active={props.active}>
             <ImageProfile src={props.avatar} alt="" />
             <TitleChatContainer>
               <TitleChat>{props.name}</TitleChat>

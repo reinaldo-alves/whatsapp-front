@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ChatItemContainer = styled.div<{fixed: boolean, counter: number}>`
+export const ChatItemContainer = styled.div<{fixed: boolean, counter: number, active: boolean}>`
   box-sizing: border-box;
   padding: 10px;
   border-bottom: 1px solid #F0F2F5;
@@ -8,6 +8,8 @@ export const ChatItemContainer = styled.div<{fixed: boolean, counter: number}>`
   align-items: center;
   cursor: pointer;
   grid-template-columns: auto 1fr ${({ fixed }) => fixed ? 'auto' : '0'} ${({ counter }) => counter ? 'auto' : '0'};
+  background-color: ${({ active }) => active ? '#dddddd' : 'transparent'};
+  border: 5px solid #fff;
 `;
 
 export const ImageProfile = styled.img`

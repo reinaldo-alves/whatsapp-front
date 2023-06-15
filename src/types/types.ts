@@ -5,6 +5,7 @@ export interface IUser {
     avatar: string;
     password: string;
     color: string
+    online: boolean;
 }
 
 export interface IMessage {

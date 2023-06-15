@@ -8,7 +8,7 @@ import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
 import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, OptionsContainer, Overlay, TitleChat, TitleChatContainer } from './styles';
 import { MessageContext } from '../../contexts/MessageContext';
-import { hourMessage, updateMessages } from '../../utilities/functions';
+import { hourMessage, isInArray, updateMessages } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
@@ -18,7 +18,7 @@ interface IProps {
 
 function ChatMessages(props: IProps) {
   const { user, otherUsers, setOtherUsers, users } = useContext(UserContext);
-  const { allMessages, setAllMessages, activator, setActivator, myRooms, activeRoom, setActiveRoom, fixed, setFixed } = useContext(MessageContext);
+  const { allMessages, setAllMessages, activator, setActivator, myRooms, activeRoom, setActiveRoom, fixed, setFixed, messageInputRef } = useContext(MessageContext);
 
   const [message, setMessage] = useState("");
   const [dropList, setDropList] = useState(false);
@@ -27,11 +27,11 @@ function ChatMessages(props: IProps) {
 
   const renderMessages = allMessages[props.room.roomname] || []
 
-  const [groupUsers] = myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)
+  const [groupUsers] = myRooms.filter((item: IRoom) => item.roomname === props.room.roomname) as Array<IRoom>
 
   const handleMessage = () => {
     if(message){
-      io.emit("message", {user: user, message: message, hour: hourMessage}, props.room)
+      io.emit("message", {user: user, message: message, hour: hourMessage()}, props.room)
       setMessage("")
     }
   }
@@ -55,13 +55,17 @@ function ChatMessages(props: IProps) {
 
   const quitGroup = () => {
     io.emit("exitgroup", user, activeRoom);
-    alert(`Você saiu do grupo ${activeRoom.name}`)
-    setActiveRoom({name: '', avatar: '', users: [], messages: [], group: true, roomname: ''});
   }
 
   function handleNewMember(newMember: IUser) {
-    io.emit("adduser", newMember, props.room);
-    setDropList(false);
+    if (!newMember.online) {
+      alert(`${newMember.name} está offline. Tente novamente mais tarde`)
+    } else if (isInArray(props.room.users, newMember.email)) {
+      alert(`${newMember.name} já está neste grupo`)
+    } else {
+      io.emit("adduser", newMember, props.room);
+      setDropList(false);
+    }
   }
 
   useEffect(() => {
@@ -71,6 +75,17 @@ function ChatMessages(props: IProps) {
     }
   }, [allMessages, activator])
 
+  useEffect(() => {
+    io.on("generalMessage", (message) => {
+      if (message === 'success') {
+        alert(`Você saiu do grupo ${activeRoom.name}`)
+        setActiveRoom({name: '', avatar: '', users: [], messages: [], group: true, roomname: ''});
+      } else {
+        alert(message)
+      }
+    })
+  }, [])
+
   return(
     <>
       <HeaderContainer>
@@ -79,7 +94,7 @@ function ChatMessages(props: IProps) {
           <TitleChatContainer>
             <TitleChat>{props.room.name}</TitleChat>
             <GroupMembers>
-              {!props.room.group? '' : 
+              {!props.room.group? '' :
               groupUsers.users.map((user: IUser, index: number) => (
                 <span>{user.name}{index + 1 < groupUsers.users.length? ', ' : ''}</span>
                 ))} 
@@ -98,16 +113,16 @@ function ChatMessages(props: IProps) {
                   <Dropdown dropdown={dropList} onClick={() => setDropList(false)}>
                     <ul>
                       <DropdownTitle>Adicione um usuário no grupo</DropdownTitle>
-                      {otherUsers.length===0?
+                      {otherUsers.filter((el: IUser) => !isInArray(props.room.users, el.email)).length===0?
                         <span style={{display: 'block', width: '100%', textAlign: 'center'}}>
-                          Nenhum usuário conectado
+                          Nenhum usuário para adicionar
                         </span>
                       : ''}
-                      {otherUsers.map((item: IUser) => (
+                      {otherUsers.filter((el: IUser) => !isInArray(props.room.users, el.email)).map((item: IUser, index: number) => (
                         <li>
-                          <MenuItem onClick={() => handleNewMember(item)}>
+                          <MenuItem key={index} onClick={() => handleNewMember(item)} online={item.online}>
                               <img alt="" src={item.avatar} />
-                              <span>{item.name}</span>
+                              <span>{item.online? item.name : `${item.name} (offline)`}</span>
                           </MenuItem>
                         </li>
                       ))}
@@ -123,7 +138,7 @@ function ChatMessages(props: IProps) {
 
       <ChatMessagesArea ref={messagesArea}>
           {renderMessages.map((message: IMessage, index: number) => (
-            <MessagesPosition system={!message.user.email} myMessage={message.user.email===user.email}>
+            <MessagesPosition key={index} system={!message.user.email} myMessage={message.user.email===user.email}>
               <MessageBaloon system={!message.user.email} myMessage={message.user.email===user.email}>
                 {message.user.email? 
                   <MessageContainer>
@@ -141,6 +156,7 @@ function ChatMessages(props: IProps) {
 
       <ChatInputArea>
             <input
+              ref={messageInputRef}
               type='text'
               onKeyUp={handleMessageByEnter}
               placeholder="Mensagem"

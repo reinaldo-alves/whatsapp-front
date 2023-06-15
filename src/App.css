@@ -40,6 +40,11 @@
   border-right: 1px solid #e6e6e6;
 }
 
+.chat-items-container {
+  height: calc(100% - 80px);
+  overflow-y: auto;
+}
+
 .chat-messages {
   flex: 1;
   background-image: url('./assets/zap.png');

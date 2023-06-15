@@ -131,7 +131,7 @@ export const GroupButton = styled.button`
     }
 `;
 
-export const MenuItem = styled.div`
+export const MenuItem = styled.div<{online: boolean}>`
     width: 100%;
     min-height: 40px;
     cursor: pointer;
@@ -144,6 +144,7 @@ export const MenuItem = styled.div`
         width: 30px;
         height: 30px;
         border-radius: 50%;
+        filter: grayscale(${({ online }) => online ? '0' : '1'});
     }
 
     span {
@@ -153,6 +154,8 @@ export const MenuItem = styled.div`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: ${({ online }) => online ? '#000' : '#888'};
+        font-style: ${({ online }) => online ? 'normal' : 'italic'};
     }
 
     :hover {
