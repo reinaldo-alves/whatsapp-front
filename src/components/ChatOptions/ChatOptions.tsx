@@ -77,13 +77,21 @@ function ChatOptions() {
               <ul>
                 <DropdownTitle>Escolha um usuário para conversar</DropdownTitle>
                 {otherUsers.length===0 ? <NoUserMessage>Nenhum usuário conectado</NoUserMessage> : ''}
-                {otherUsers.map((item: IUser) => (
-                  <li>
-                    <MenuItem onClick={() => handleNewChat(item)} online={item.online}>
-                        <img alt="" src={item.avatar} />
-                        <span>{item.online? item.name : `${item.name} (offline)`}</span>
-                    </MenuItem>
-                  </li>
+                {[...otherUsers]
+                  .sort((a: IUser, b: IUser) => {
+                    const nomeA = a.name.toUpperCase();
+                    const nomeB = b.name.toUpperCase();
+                    if (nomeA < nomeB) return -1;
+                    if (nomeA > nomeB) return 1;
+                    return 0
+                  })
+                  .map((item: IUser) => (
+                    <li>
+                      <MenuItem onClick={() => handleNewChat(item)} online={item.online}>
+                          <img alt="" src={item.avatar} />
+                          <span>{item.online? item.name : `${item.name} (offline)`}</span>
+                      </MenuItem>
+                    </li>
                 ))}
               </ul>
             </Dropdown>

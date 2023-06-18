@@ -58,21 +58,25 @@ function EnterName() {
         setPassword1('');
       } else {
         if(name && email && password && password1){
-          if(password === password1){
-            const color = selectRandom(colors);
-            io.emit("join", name, email, avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000', password, color); 
-            setNewUser(false)
-            alert('Usuário criado com sucesso! Faça o login para continuar')
-            setName('');
-            setPassword('');
-            setEmail('');
-            setAvatar('');
-            setPassword1('');
+          if(/\S+@\S+\.\S+/.test(email)){
+            if(password === password1){
+              const color = selectRandom(colors);
+              io.emit("join", name, email, avatar? avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000', password, color); 
+              setNewUser(false)
+              alert('Usuário criado com sucesso! Faça o login para continuar')
+              setName('');
+              setPassword('');
+              setEmail('');
+              setAvatar('');
+              setPassword1('');
+            } else {
+              alert('As senhas não são iguais. Tente novamente')
+            }
           } else {
-            alert('As senhas não são iguais. Tente novamente')
+            alert('Email inválido. Tente novamente com outro email')
           }
         } else {
-            alert('Preencha todos os dados corretamente')
+          alert('Preencha todos os dados corretamente')
         }
       }
     }

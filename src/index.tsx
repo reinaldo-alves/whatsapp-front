@@ -12,6 +12,3 @@ root.render(
     </MessageStore>
   </UserStore>
 );
-
-//O que falta
-//- Adicionar validação de email

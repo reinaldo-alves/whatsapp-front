@@ -90,9 +90,13 @@ function ChatMessages(props: IProps) {
     <>
       <HeaderContainer>
         <InfoChatContainer>
-          <ImageProfile src={props.room.avatar} alt="" />
+          <ImageProfile
+           src={myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)[0].avatar}
+          alt="" />
           <TitleChatContainer>
-            <TitleChat>{props.room.name}</TitleChat>
+            <TitleChat>
+              {myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)[0].name}
+            </TitleChat>
             <GroupMembers>
               {!props.room.group? '' :
               groupUsers.users.map((user: IUser, index: number) => (
@@ -118,13 +122,22 @@ function ChatMessages(props: IProps) {
                           Nenhum usuário para adicionar
                         </span>
                       : ''}
-                      {otherUsers.filter((el: IUser) => !isInArray(props.room.users, el.email)).map((item: IUser, index: number) => (
-                        <li>
-                          <MenuItem key={index} onClick={() => handleNewMember(item)} online={item.online}>
-                              <img alt="" src={item.avatar} />
-                              <span>{item.online? item.name : `${item.name} (offline)`}</span>
-                          </MenuItem>
-                        </li>
+                      {[...otherUsers]
+                        .sort((a: IUser, b: IUser) => {
+                          const nomeA = a.name.toUpperCase();
+                          const nomeB = b.name.toUpperCase();
+                          if (nomeA < nomeB) return -1;
+                          if (nomeA > nomeB) return 1;
+                          return 0
+                        })
+                        .filter((el: IUser) => !isInArray(props.room.users, el.email))
+                        .map((item: IUser, index: number) => (
+                          <li>
+                            <MenuItem key={index} onClick={() => handleNewMember(item)} online={item.online}>
+                                <img alt="" src={item.avatar} />
+                                <span>{item.online? item.name : `${item.name} (offline)`}</span>
+                            </MenuItem>
+                          </li>
                       ))}
                     </ul>
                   </Dropdown>
