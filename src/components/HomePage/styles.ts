@@ -22,8 +22,18 @@ export const HomeText = styled.span`
     min-width: 100px;
     font-size: 20px;
     text-align: center;
+
+    a {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+    }
 `;
 
 export const HomeLogo = styled.img`
     height: 300px;
+
+    @media (max-width: 400px) {
+        height: 200px;
+    }
 `;

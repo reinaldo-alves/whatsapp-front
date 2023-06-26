@@ -32,12 +32,43 @@
   background-color: #fff;
   position: absolute;
   display: flex;
+
+  @media (max-width: 900px) {
+    height: 100%;
+    width: 100%;
+  }
 }
 
 .chat-contacts {
   width: 30%;
   height: 100%;
   border-right: 1px solid #e6e6e6;
+
+  @media (max-width: 900px) {
+    width: 40%;
+  }
+
+  @media (max-width: 700px) {
+    position: absolute;
+    width: 300px;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 6;
+    box-shadow: 0 1px 3px 0;
+    transition: 0.5s
+  }
+}
+
+.hidden {
+  
+  @media (max-width: 700px) {
+    position: absolute;
+    width: 300px;
+    top: 0;
+    left: -320px;
+    background-color: #fff;
+  }
 }
 
 .chat-items-container {

@@ -4,6 +4,7 @@ import SendMessageIcon from '../../assets/send.png';
 import NewMember from '../../assets/novo-usuario.png';
 import LogOutIcon from '../../assets/log-out.png';
 import PinIcon from '../../assets/fixado.png'
+import HambMenu from '../../assets/hamburger.png'
 import { IMessage, IRoom, IUser } from '../../types/types';
 import { UserContext } from '../../contexts/UserContext';
 import { ButtonsContainer, ChatInputArea, ChatMessagesArea, Dropdown, DropdownTitle, GroupMembers, HeaderContainer, ImageProfile, InfoChatContainer, MenuItem, MessageBaloon, MessageContainer, MessageHour, MessageMessage, MessageName, MessagesPosition, OptionsButton, OptionsContainer, Overlay, TitleChat, TitleChatContainer } from './styles';
@@ -17,7 +18,7 @@ interface IProps {
 }
 
 function ChatMessages(props: IProps) {
-  const { user, otherUsers, setOtherUsers, users } = useContext(UserContext);
+  const { user, otherUsers, setOtherUsers, users, showMenu, setShowMenu } = useContext(UserContext);
   const { allMessages, setAllMessages, activator, setActivator, myRooms, activeRoom, setActiveRoom, fixed, setFixed, messageInputRef } = useContext(MessageContext);
 
   const [message, setMessage] = useState("");
@@ -78,7 +79,7 @@ function ChatMessages(props: IProps) {
   useEffect(() => {
     io.on("generalMessage", (message) => {
       if (message === 'success') {
-        alert(`Você saiu do grupo ${activeRoom.name}`)
+        alert(`Você saiu do grupo ${myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)[0].name}`)
         setActiveRoom({name: '', avatar: '', users: [], messages: [], group: true, roomname: ''});
       } else {
         alert(message)
@@ -90,6 +91,7 @@ function ChatMessages(props: IProps) {
     <>
       <HeaderContainer>
         <InfoChatContainer>
+          <OptionsButton src={HambMenu} alt='' menu={true} onClick={() => setShowMenu(!showMenu)} />
           <ImageProfile
            src={myRooms.filter((item: IRoom) => item.roomname === props.room.roomname)[0].avatar}
           alt="" />
@@ -100,7 +102,7 @@ function ChatMessages(props: IProps) {
             <GroupMembers>
               {!props.room.group? '' :
               groupUsers.users.map((user: IUser, index: number) => (
-                <span>{user.name}{index + 1 < groupUsers.users.length? ', ' : ''}</span>
+                <span key={index}>{user.name}{index + 1 < groupUsers.users.length? ', ' : ''}</span>
                 ))} 
             </GroupMembers>
           </TitleChatContainer>

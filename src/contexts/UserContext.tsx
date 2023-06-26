@@ -13,9 +13,10 @@ export const UserStore = ({ children }: any) => {
     const [password, setPassword] =useState('');
     const [joined, setJoined] =useState(false);
     const [otherUsers, setOtherUsers] = useState([] as Array<IUser>);
+    const [showMenu, setShowMenu] = useState(false)
 
     return (
-        <UserContext.Provider value={{id, setId, user, setUser, name, setName, email, setEmail, avatar, setAvatar, password, setPassword, joined, setJoined, users, setUsers, otherUsers, setOtherUsers}}>
+        <UserContext.Provider value={{id, setId, user, setUser, name, setName, email, setEmail, avatar, setAvatar, password, setPassword, joined, setJoined, users, setUsers, otherUsers, setOtherUsers, showMenu, setShowMenu}}>
             { children }
         </UserContext.Provider>
     )

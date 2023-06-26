@@ -11,10 +11,18 @@ export const LoginContainer = styled.div<{active: boolean}>`
     align-items: center;
     justify-content: center;
     gap: 20px;
+
+    @media (max-width: 700px) {
+        width: 100%;
+    }
 `;
 
 export const LoginLogo = styled.img`
     height: 200px;
+
+    @media (max-width: 430px) {
+        height: 150px;
+    }
 `;
 
 export const LoginMessage = styled.span`
@@ -22,11 +30,13 @@ export const LoginMessage = styled.span`
     font-weight: bold;
     color: #25D366;
     margin-bottom: 50px;
+    text-align: center;
 `;
 
 export const LoginLabel = styled.span`
     color: #25D366;
     font-size: 22px;
+    text-align: center;
 `;
 
 export const LoginInput = styled.input<{width?: string}>`
@@ -40,6 +50,19 @@ export const LoginInput = styled.input<{width?: string}>`
     padding: 4px 10px;
     font-size: 16px;
     text-align: center;
+
+    @media (max-width: 430px) {
+        width: 300px;
+    }
+`;
+
+export const PasswordContainer = styled.div`
+    display: flex;
+    gap: 20px;
+
+    @media (max-width: 500px) {
+        flex-direction: column;
+    }
 `;
 
 export const LoginButton = styled.button<{width?: string}>`

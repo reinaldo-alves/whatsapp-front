@@ -12,10 +12,16 @@ export const OptionsContainer = styled.div`
     padding: 10px;
 `;
 
-export const OptionsButton = styled.img`
+export const OptionsButton = styled.img<{menu?: boolean}>`
     height: 25px;
     cursor: pointer;
     z-index: 5;
+    display: ${({ menu }) => menu ? 'none' : 'flex'};
+    margin-right: ${({ menu }) => menu ? '10px' : '0'};
+
+    @media (max-width: 700px) {
+      display: flex;
+    }
 `;
 
 export const Dropdown = styled.nav<{ dropdown: boolean }>`

@@ -29,23 +29,28 @@ export const NoUserMessage = styled.span`
     text-align: center;
 `;
 
-export const UserName = styled.span`
+export const UserName = styled.div`
     font-size: 20px;
     font-weight: bold;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
     width: 100%;
-    margin-left: 15px;
+    margin: 0 15px;
 `;
 
-export const OptionsButton = styled.img`
+export const OptionsButton = styled.img<{menu?: boolean}>`
     height: 25px;
     cursor: pointer;
     z-index: 5;
+    display: ${({ menu }) => menu ? 'none' : 'flex'};
+    margin-right: ${({ menu }) => menu ? '10px' : '0'};
+
+    @media (max-width: 700px) {
+      display: flex;
+    }
 `;
 
 export const Dropdown = styled.nav<{ dropdown: boolean }>`
@@ -72,6 +77,10 @@ export const Dropdown = styled.nav<{ dropdown: boolean }>`
             list-style: none;
         }
 
+    }
+
+    @media (max-width: 530px) {
+        left: -210px;
     }
 
 `;

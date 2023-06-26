@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import NewChat from '../../assets/new-message.png';
 import NewGroup from '../../assets/add-group.png';
+import ArrowLeft from '../../assets/arrow-left.png'
 import socket from 'socket.io-client';
 import { UserContext } from '../../contexts/UserContext';
 import { Dropdown, DropdownTitle, GroupButton, GroupInput, GroupLabel, OptionsButton, OptionsContainer, Overlay, MenuItem, UserName, ImageProfile, HeaderContainer, GroupContainer, NoUserMessage } from './styles';
@@ -12,7 +13,7 @@ const io = socket('http://localhost:4000')
 
 function ChatOptions() {
     const { rooms, myRooms, setActiveRoom, setNewRoom } = useContext(MessageContext);
-    const { user, users, otherUsers, setOtherUsers } = useContext(UserContext);
+    const { user, users, otherUsers, setOtherUsers, showMenu, setShowMenu } = useContext(UserContext);
     const { allMessages, setAllMessages } = useContext(MessageContext);
     const [dropChat, setDropChat] = useState(false);
     const [dropGroup, setDropGroup] = useState(false);
@@ -28,6 +29,7 @@ function ChatOptions() {
         setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:'', online: true}, message: `Grupo ${roomName} criado`, hour: ''}, roomName))
         setNewRoom(true);
         setDropGroup(false);
+        setShowMenu(false);
       } else {
         alert('Já existe um grupo com este nome. Por favor, escolha outro nome');
         setRoomName('');
@@ -43,10 +45,12 @@ function ChatOptions() {
           setAllMessages(() => updateMessages(allMessages, {user: {id:'', email: '', name:'', avatar: '', password: '', color:'', online: true}, message: 'Conversa iniciada', hour: ''}, user.id.concat(receiver.id)))
           setNewRoom(true);
           setDropChat(false);
+          setShowMenu(false);
         } else {
           alert('Esta conversa já foi iniciada. Você será redirecionado para ela');
           setActiveRoom(myRooms.find((item: IRoom) => item.roomname === receiver.email.concat(user.email) || item.roomname === user.email.concat(receiver.email)))
           setDropChat(false);
+          setShowMenu(false);
         }
       } else {
         alert(`${receiver.name} está offline. Tente novamente mais tarde`)
@@ -61,6 +65,7 @@ function ChatOptions() {
 
     return(
       <HeaderContainer>
+        <OptionsButton src={ArrowLeft} alt='' menu={true} onClick={() => setShowMenu(!showMenu)} />
         <ImageProfile src={user.avatar? user.avatar : 'https://img.freepik.com/vetores-premium/icone-de-perfil-de-avatar_188544-4755.jpg?w=2000'} alt="" />
         <UserName>{user.name}</UserName>
         <OptionsContainer>

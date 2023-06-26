@@ -18,7 +18,7 @@ function App() {
   let roomsFromServer = [] as Array<IRoom>;
 
   const { allMessages, setAllMessages, rooms, setRooms, activeRoom, setActiveRoom, myRooms, setMyRooms, activator, setActivator, counter, setCounter, fixed, messageInputRef, newRoom, setNewRoom } = useContext(MessageContext);
-  const {user, joined, users, setUsers} = useContext(UserContext);
+  const {user, joined, users, setUsers, showMenu, setShowMenu} = useContext(UserContext);
 
   const [counterRoomName, setCounterRoomName] = useState('');
 
@@ -61,13 +61,6 @@ function App() {
     setCounter(() => updateCounter(counter, counterRoomName, activeRoom))
     setMyRooms(reorderRooms(myRooms, counterRoomName));
   }, [allMessages])
-
-  // useEffect(() => {
-  //   io.on("groupdata", (room) => {
-  //     const newMyRooms = [room, ...myRooms]
-  //     setMyRooms(newMyRooms)
-  //   })
-  // }, [])
 
   useEffect(() => {
     roomsFromServer = updateArray(rooms, myRooms)
@@ -120,7 +113,7 @@ function App() {
       <div className="back-ground"></div>
       <div className="chat-container">
         
-        <div className="chat-contacts">
+        <div className={`${showMenu? 'chat-contacts' : 'chat-contacts hidden'}`}>
           <ChatOptions />
           <div className="chat-items-container">
             {fixed.roomname? 
@@ -138,6 +131,7 @@ function App() {
             {myRooms.filter((el: IRoom) => el.roomname !== fixed.roomname).map((item: IRoom, index: number) => (
               <ChatItem key={index} onClick={() => {
                 setActiveRoom(item);
+                setShowMenu(false);
                 setCounter(() => restartCounter(counter, item.roomname));
                 io.emit("joinroom", item.roomname);
                 setActivator(!activator);

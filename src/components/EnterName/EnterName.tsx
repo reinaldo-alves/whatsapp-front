@@ -3,13 +3,13 @@ import Logo from '../../assets/whatsappweb.png'
 import { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 import { searchUserbyEmail, selectRandom } from '../../utilities/functions';
-import { LoginButton, LoginContainer, LoginInput, LoginLabel, LoginLogo, LoginMessage, TextAddUser } from './styles';
+import { LoginButton, LoginContainer, LoginInput, LoginLabel, LoginLogo, LoginMessage, PasswordContainer, TextAddUser } from './styles';
 import { isInArray } from '../../utilities/functions';
 
 const io = socket('http://localhost:4000')
 
 function EnterName() {
-    const { name, setName, email, setEmail, avatar, setAvatar, password, setPassword, setUser, users, setUsers, setJoined, setId } = useContext(UserContext);
+    const { name, setName, email, setEmail, avatar, setAvatar, password, setPassword, setUser, users, setUsers, setJoined, setId, setShowMenu } = useContext(UserContext);
     
     const colors = ['red', 'blue', 'pink', 'green', 'gray', 'orange', 'brown']
 
@@ -114,10 +114,10 @@ function EnterName() {
                 <LoginLabel>Insira o link de uma imagem para seu perfil</LoginLabel>
                 <LoginInput value={avatar} type='text' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatar(e.target.value)} onKeyUp={addNewUserByEnter} />
                 <LoginLabel>Digite sua senha nos dois campos abaixo</LoginLabel>
-                <div style={{display: 'flex', gap: '20px'}}>
+                <PasswordContainer>
                     <LoginInput width='220px' type='password' value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} onKeyUp={addNewUserByEnter} />
                     <LoginInput width='220px' type='password' value={password1} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)} onKeyUp={addNewUserByEnter} />
-                </div>
+                </PasswordContainer>
                 <div style={{marginTop: '20px', display: 'flex', gap: '40px'}}>
                     <LoginButton width='120px' onClick={() => {
                         setNewUser(false)
