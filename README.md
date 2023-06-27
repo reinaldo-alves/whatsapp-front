@@ -1,46 +1,40 @@
-# Getting Started with Create React App
+<h1 align="center">WhatsApp Web Clone | by Reinaldo Alves</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Sobre o projeto
 
-## Available Scripts
+WhatsApp Web Clone é um chat em tempo real inspirado no WhatsApp. Este sistema permite que os usuários criem contas com nome, email, senha e foto de perfil e façam login por meio desta conta. Uva vez logado, o usuário pode iniciar conversas com qualquer um que também esteja online, também pode criar chats em grupos e adicionar outros usuários nesses grupos. Para construir a interface do WhatsApp Web Clone, foi utilizado o framework **React** com **TypeScript** e **Styled Components**, enquanto que para o back-end foi utilizado **Node.js** com requisições através do **Socket.IO**, tecnologia baseada em web sockets que permite troca de informações em tempo real entre o servidor e os diversos clients conectados.
 
-In the project directory, you can run:
+## Como utilizar o sistema?
 
-### `npm start`
+### Preparando o ambiente
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Para que o WhatsApp Web Clone possa funcionar na sua máquina, você precisa ter as ferramentas **Node.js** e o **Git** instaladas. Caso ainda não tenha, acesse os links abaixo para instalar.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Node.js: https://nodejs.org/
+- Git: https://git-scm.com/downloads/
 
-### `npm test`
+### Instalando o sistema
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Acesse o terminal do seu sistema operacional e navegue até o diretório onde deseja instalar o sistema. Em seguida, digite os seguintes comandos para clonar os repositórios do front-end e do back-end.
 
-### `npm run build`
+- Front-end: `git clone https://github.com/reinaldo-alves/whatsapp-front.git`
+- Back-end: `git clone https://github.com/reinaldo-alves/whatsapp-back.git`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Após a clonagem, navegue até a pasta onde foi instalado o front-end e execute o comando `npm install` para instalar as dependências do projeto. Em seguida, repita o mesmo procedimento para o back-end.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Executando o projeto
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+No terminal, navegue até a pasta do back-end e execute o seguinte comando `npm start`. O servidor estará funcionando quando a mensagem `Servidor rodando na porta 4000` for exibida no terminal.
 
-### `npm run eject`
+Em seguida, abra outra aba ou janela do terminal, navegue até a pasta do front-end e execute o comando `npm start` para executar o projeto.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Por fim, acesse o endereço http://localhost:3000 no seu navegador para começar a usar o WhatsApp Web Clone.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+OBS: certifique-se de que as portas 3000 e 4000 estejam livres em sua máquina.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Contribua com o WhatsApp Web Clone:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Se você tiver alguma dúvida, encontrar algum problema ou quiser fazer uma sugestão para melhorar a aplicação, abra uma issue neste repositório ou entre em contato por email ou pelas redes sociais:
+- [E-mail](mailto:reinaldoasjr8@gmail.com)
+- [Instagram](https://www.instagram.com/reinaldo.alves8/)
+- [Linkedin](https://www.linkedin.com/in/reinaldo-alves-8639aba9/)
