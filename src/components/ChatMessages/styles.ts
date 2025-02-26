@@ -291,3 +291,34 @@ export const MessageHour = styled.span`
   align-self: flex-end;
   justify-self: flex-end;
 `;
+
+export const VideoContainer = styled.div`
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  height: 100%;
+  align-items: center;
+
+  div {
+    width: 100%;
+    max-width: 500px;
+
+    video {
+      width: 100%;
+      border-radius: 2px;
+      border: 1px solid #ccc;
+      background-color: #ddd;
+    }
+
+    span {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+  }
+
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+`;

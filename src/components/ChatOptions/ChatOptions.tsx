@@ -90,8 +90,8 @@ function ChatOptions() {
                     if (nomeA > nomeB) return 1;
                     return 0
                   })
-                  .map((item: IUser) => (
-                    <li>
+                  .map((item: IUser, index: number) => (
+                    <li key={index}>
                       <MenuItem onClick={() => handleNewChat(item)} online={item.online}>
                           <img alt="" src={item.avatar} />
                           <span>{item.online? item.name : `${item.name} (offline)`}</span>
